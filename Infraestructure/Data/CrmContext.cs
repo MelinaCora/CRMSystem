@@ -34,7 +34,7 @@ namespace CRMSystem.Data
                 .Property(ct => ct.Name)
                 .HasMaxLength(25);
 
-            modelBuilder.Entity<Clients>() 
+            modelBuilder.Entity<Clients>()
                 .HasKey(cl => cl.ClientID);
 
             modelBuilder.Entity<Clients>()
@@ -43,7 +43,7 @@ namespace CRMSystem.Data
 
             modelBuilder.Entity<Clients>()
                 .Property(cl => cl.Name)
-                .HasMaxLength (255);
+                .HasMaxLength(255);
 
             modelBuilder.Entity<Clients>()
                .Property(cl => cl.Email)
@@ -130,7 +130,7 @@ namespace CRMSystem.Data
 
             modelBuilder.Entity<Tasks>()
                 .HasOne(t => t.Project)
-                .WithMany(p => p.TaskStatus) 
+                .WithMany(p => p.TaskStatus)
                 .HasForeignKey(t => t.ProjectID);
 
             modelBuilder.Entity<Interactions>()
@@ -154,9 +154,41 @@ namespace CRMSystem.Data
                 .WithMany()
                 .HasForeignKey(i => i.InteractionType);
 
+            modelBuilder.Entity<Users>().HasData(
+                new Users { UserID = 1, Name = "Joe Done", Email = "jdone@marketing.com" },
+                new Users { UserID = 2, Name = "Nill Amstrong", Email = "namstrong@marketing.com" },
+                new Users { UserID = 3, Name = "Marlyn Morales", Email = "mmorales@marketing.com" },
+                new Users { UserID = 4, Name = "Antony Orué", Email = "aorue@marketing.com" },
+                new Users { UserID = 5, Name = "Jazmin Fernandez", Email = "jfernandez@marketing.com" }
+            );
+
+            modelBuilder.Entity<TaskStatus>().HasData(
+                new TaskStatus { Id = 1, name = "Pending" },
+                new TaskStatus { Id = 2, name = "In Progress" },
+                new TaskStatus { Id = 3, name = "Blocked" },
+                new TaskStatus { Id = 4, name = "Done" },
+                new TaskStatus { Id = 5, name = "Cancel" }
+            );
+
+            modelBuilder.Entity<InteractionTypes>().HasData(
+                new InteractionTypes { Id = 1, Name = "Initial Meeting" },
+                new InteractionTypes { Id = 2, Name = "Phone Call" },
+                new InteractionTypes { Id = 3, Name = "Email" },
+                new InteractionTypes { Id = 4, Name = "Presentation Of Results" }
+            );
+
+            modelBuilder.Entity<CampaignTypes>().HasData(
+                new CampaignTypes { Id = 1, Name = "SEO" },
+                new CampaignTypes { Id = 2, Name = "PPC" },
+                new CampaignTypes { Id = 3, Name = "Social Media" },
+                new CampaignTypes { Id = 4, Name = "Email Marketing" }
+            );
+
+            base.OnModelCreating(modelBuilder);
+
         }
     }
-        
 
-   
+
+
 }

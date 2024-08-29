@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<CrmContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 21)))); // Ajusta la versión de MySQL
+        new MySqlServerVersion(new Version(8, 0, 21))));
 
 
 var app = builder.Build();
