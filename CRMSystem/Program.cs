@@ -1,4 +1,8 @@
+using Aplication.Interfaces;
+using Aplication.Services;
 using CRMSystem.Data;
+using Infraestructure.Commands;
+using Infraestructure.Querys;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +17,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<CrmContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
         new MySqlServerVersion(new Version(8, 0, 21))));
+
+builder.Services.AddScoped<IClientServices, ClientService>();
+builder.Services.AddScoped<IClientQuery, ClientQuery>();
+builder.Services.AddScoped<IClientsCommand, ClientsCommand>();
 
 
 var app = builder.Build();
