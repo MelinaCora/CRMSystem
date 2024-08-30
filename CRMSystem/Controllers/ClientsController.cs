@@ -31,7 +31,7 @@ namespace CRMSystem.Controllers
         public async Task <IActionResult> UpdateClient(ClientRequest request)
         {
             var result = await _clientService.UpdateClient(request);
-            return new JsonResult(result);
+            return new JsonResult(result) { StatusCode = 201};
         }
     }
 }
