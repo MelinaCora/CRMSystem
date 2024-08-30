@@ -13,11 +13,8 @@ namespace Aplication.Interfaces
     {
        Task <CreateClientResponse> UpdateClient(ClientRequest request);
 
-       Task <Clients> DeleteClient(int ClientID);
-
        Task <List<Clients>> GetAll();
 
-       Task <Clients> GetByID(int ClientID);
 
     }
 }

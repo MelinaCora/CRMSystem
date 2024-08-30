@@ -1,5 +1,7 @@
 ﻿using Aplication.Interfaces;
+using CRMSystem.Data;
 using CRMSystem.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,14 +12,21 @@ namespace Infraestructure.Querys
 {
     public class ClientQuery : IClientQuery
     {
-        public Clients GetClients(int ClientID)
+        private readonly CrmContext _context;
+
+        public ClientQuery(CrmContext context)
+        {
+            _context = context;
+        }
+
+        public Clients GetClient(int ClientID)
         {
             throw new NotImplementedException();
         }
 
-        public List<Clients> GetListClients()
+        public async Task <List<Clients>> GetListClientsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.Clients.ToListAsync();
         }
     }
 }

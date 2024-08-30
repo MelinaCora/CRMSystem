@@ -21,7 +21,7 @@ namespace Aplication.Services
             _commands = commands;
             _query = query;
         }
-        public async Task <CreateClientResponse> UpdateClient (ClientRequest request)
+        public async Task<CreateClientResponse> UpdateClient(ClientRequest request)
         {
             Clients Client = new Clients()
             {
@@ -44,27 +44,14 @@ namespace Aplication.Services
 
             };
         }
-        
-        public Clients DeleteClient(int ClientID)
+
+        public async Task<List<Clients>> GetAll()
         {
-            throw new NotImplementedException();
+
+            List<Clients> clients = new List<Clients>();
+            clients = await _query.GetListClientsAsync();
+            return clients;
         }
 
-        public Task<List<Clients>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Clients> GetByID(int ClientID)
-        {
-            throw new NotImplementedException();
-        }
-
-     
-
-        Task<Clients> IClientServices.DeleteClient(int ClientID)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
