@@ -28,6 +28,12 @@ builder.Services.AddScoped<ICampaignTypeQuery, CampaignTypeQuery>();
 builder.Services.AddScoped<IInteractionTypeService, InteractionTypeService>();
 builder.Services.AddScoped<IInteractionTypeQuery, InteractionTypeQuery>();
 
+builder.Services.AddScoped<ITaskStatusService, TaskStatusService>();
+builder.Services.AddScoped<ITaskStatusQuery, TaskStatusQuery>();
+
+
+
+
 
 var app = builder.Build();
 

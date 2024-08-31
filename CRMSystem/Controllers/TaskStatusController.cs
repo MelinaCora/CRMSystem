@@ -1,5 +1,4 @@
 ﻿using Aplication.Interfaces;
-using CRMSystem.Data;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -7,20 +6,19 @@ namespace CRMSystem.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class InteractionTypesController : ControllerBase
+    public class TaskStatusController : ControllerBase
     {
-        private readonly IInteractionTypeService _service;
+        private readonly ITaskStatusService _service;
 
-        public InteractionTypesController(IInteractionTypeService service)
+        public TaskStatusController(ITaskStatusService service)
         {
             _service = service;
         }
 
         [HttpGet]
-
         public async Task<IActionResult> GetAll()
         {
-            var result = await _service.GetAllInteractions();
+            var result = await _service.GetAll();
             return new JsonResult(result);
         }
     }
