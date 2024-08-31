@@ -10,6 +10,6 @@ namespace Aplication.Interfaces
     public interface IClientQuery
     {
         Task <List<Clients>> GetListClientsAsync();
-        Clients GetClient(int ClientID);
+        
     }
 }

@@ -19,11 +19,6 @@ namespace Infraestructure.Querys
             _context = context;
         }
 
-        public Clients GetClient(int ClientID)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task <List<Clients>> GetListClientsAsync()
         {
             return await _context.Clients.ToListAsync();
