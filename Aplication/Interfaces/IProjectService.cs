@@ -1,6 +1,5 @@
 ﻿using Aplication.Request;
 using Aplication.Responses;
-using CRMSystem.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +8,8 @@ using System.Threading.Tasks;
 
 namespace Aplication.Interfaces
 {
-    public interface IClientServices
+    public interface IProjectService
     {
-       Task <CreateClientResponse> CreateClient(ClientRequest request);
-
-       Task <List<Clients>> GetAll();
-
-
+        Task<CreateProjectResponse> CreateProject(ProjectRequest project);
     }
 }

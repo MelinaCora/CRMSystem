@@ -3,7 +3,6 @@ using Aplication.Request;
 using Aplication.Services;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace CRMSystem.Controllers
 {
@@ -19,7 +18,7 @@ namespace CRMSystem.Controllers
             _clientService = clientService;
         }
 
-        [HttpOptions]
+        [HttpGet]
         public async Task <IActionResult> GetAll()
         {
             var result = await _clientService.GetAll();
@@ -28,9 +27,9 @@ namespace CRMSystem.Controllers
         }
 
         [HttpPost]
-        public async Task <IActionResult> UpdateClient(ClientRequest request)
+        public async Task <IActionResult> CreateClient(ClientRequest request)
         {
-            var result = await _clientService.UpdateClient(request);
+            var result = await _clientService.CreateClient(request);
             return new JsonResult(result) { StatusCode = 201};
         }
     }

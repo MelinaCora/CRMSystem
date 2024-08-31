@@ -10,6 +10,5 @@ namespace Aplication.Interfaces
     public interface IClientsCommand
     {
         Task InsertClient(Clients client);
-        Task RemoveClient(int ClientID);
     }
 }

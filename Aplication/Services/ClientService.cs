@@ -21,7 +21,7 @@ namespace Aplication.Services
             _commands = commands;
             _query = query;
         }
-        public async Task<CreateClientResponse> UpdateClient(ClientRequest request)
+        public async Task<CreateClientResponse> CreateClient(ClientRequest request)
         {
             Clients Client = new Clients()
             {

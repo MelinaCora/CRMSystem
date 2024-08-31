@@ -34,6 +34,10 @@ builder.Services.AddScoped<ITaskStatusQuery, TaskStatusQuery>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUsersQuery, UsersQuery>();
 
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IProjectCommands, ProjectCommands>();
+builder.Services.AddScoped<IProjectQuery, ProjectQuery>();
+
 
 
 

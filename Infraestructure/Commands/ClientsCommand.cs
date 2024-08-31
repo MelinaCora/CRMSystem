@@ -18,15 +18,10 @@ namespace Infraestructure.Commands
             _context = context;
         }
 
-        public async Task InsertClient (Clients client)
+        public async Task InsertClient(Clients client)
         {
             _context.Add(client);
             await _context.SaveChangesAsync();
-        }
-
-        public Task RemoveClient(int ClientID)
-        {
-            throw new NotImplementedException();
         }
     }
 }
