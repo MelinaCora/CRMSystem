@@ -25,6 +25,9 @@ builder.Services.AddScoped<IClientsCommand, ClientsCommand>();
 builder.Services.AddScoped<ICampaignTypeService, CampaignTypeService>();
 builder.Services.AddScoped<ICampaignTypeQuery, CampaignTypeQuery>();
 
+builder.Services.AddScoped<IInteractionTypeService, InteractionTypeService>();
+builder.Services.AddScoped<IInteractionTypeQuery, InteractionTypeQuery>();
+
 
 var app = builder.Build();
 
