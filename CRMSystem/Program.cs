@@ -31,6 +31,8 @@ builder.Services.AddScoped<IInteractionTypeQuery, InteractionTypeQuery>();
 builder.Services.AddScoped<ITaskStatusService, TaskStatusService>();
 builder.Services.AddScoped<ITaskStatusQuery, TaskStatusQuery>();
 
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUsersQuery, UsersQuery>();
 
 
 
