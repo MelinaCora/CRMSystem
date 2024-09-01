@@ -146,13 +146,13 @@ namespace CRMSystem.Data
 
             modelBuilder.Entity<Interactions>()
                 .HasOne(i => i.Project)
-                .WithMany(p => p.Interactions)
+                .WithMany(p => p.Interaction)
                 .HasForeignKey(i => i.ProjectID);
 
             modelBuilder.Entity<Interactions>()
-                .HasOne(i => i.Interactiontype)
+                .HasOne(i => i.Interactionstype)
                 .WithMany()
-                .HasForeignKey(i => i.InteractionType);
+                .HasForeignKey(i => i.InteractionnType);
 
             modelBuilder.Entity<Users>().HasData(
                 new Users { UserID = 1, Name = "Joe Done", Email = "jdone@marketing.com" },

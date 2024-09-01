@@ -9,7 +9,7 @@
         public Guid ProjectID { get; set; }        // Foreign Key
         public Projects Project { get; set; }
 
-        public int InteractionType { get; set; } // Foreign Key
-        public InteractionTypes Interactiontype { get; set; }
+        public int InteractionnType { get; set; } // Foreign Key
+        public InteractionTypes Interactionstype { get; set; }
     }
 }

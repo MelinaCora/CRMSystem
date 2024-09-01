@@ -1,4 +1,5 @@
 ﻿using Aplication.Interfaces;
+using Aplication.Pagination;
 using CRMSystem.Data;
 using CRMSystem.Models;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,24 @@ namespace Infraestructure.Querys
             _context = context;
         }
 
-        public async Task<List<Projects>> GetProjectsAsync(string projectName = null, int? campaignTypeId = null, int? clientId = null, int pageNumber = 1, int pageSize = 10)
+       
+        public async Task<Projects> GetProjectByIDAsync(Guid projectId)
+        {
+           return await _context.Projects
+                .Include(p=> p.Clients)
+                .Include(p => p.CampaignTypes)
+                .Include(p=> p.Interaction)
+                .Include(p => p.TaskStatus)
+                .FirstOrDefaultAsync(p => p.ProjectID ==projectId);            
+        }
+
+        public async Task<Projects> GetProjectByNameAsync(string projectName)
+        {
+            return await _context.Projects
+                .FirstOrDefaultAsync(p => p.ProjectName == projectName);
+        }
+
+        public async Task<PagedResult<Projects>> GetProjectsAsync(string projectName = null, int? campaignTypeId = null, int? clientId = null, int pageNumber = 1, int pageSize = 10)
         {
             var query = _context.Projects.AsQueryable();
 
@@ -38,20 +56,16 @@ namespace Infraestructure.Querys
                 query = query.Where(p => p.ClientID == clientId.Value);
             }
 
-            // Implementa paginación
-            query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+            var totalItems = await query.CountAsync();
+            var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
 
-            return await query.ToListAsync();
-        }
-
-        public async Task<Projects> GetProjectAsync(Guid projectId)
-        {
-           return await _context.Projects
-                .Include(p=> p.Clients)
-                .Include(p => p.CampaignTypes)
-                .Include(p=> p.Interactions)
-                .Include(p => p.TaskStatus)
-                .FirstOrDefaultAsync(p => p.ProjectID ==projectId);            
+            return new PagedResult<Projects>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
 
     }

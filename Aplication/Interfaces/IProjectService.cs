@@ -1,5 +1,8 @@
-﻿using Aplication.Request;
+﻿
+using Aplication.Pagination;
+using Aplication.Request;
 using Aplication.Responses;
+using CRMSystem.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +14,10 @@ namespace Aplication.Interfaces
     public interface IProjectService
     {
         Task<CreateProjectResponse> CreateProject(ProjectRequest project);
+        Task<PagedResult<Projects>> GetProjectsAsync(string projectName = null,
+            int? campaignTypeId = null,
+            int? clientId = null,
+            int pageNumber = 1,
+            int pageSize = 10);
     }
 }

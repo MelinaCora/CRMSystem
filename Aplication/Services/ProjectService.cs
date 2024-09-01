@@ -1,4 +1,5 @@
 ﻿using Aplication.Interfaces;
+using Aplication.Pagination;
 using Aplication.Request;
 using Aplication.Responses;
 using CRMSystem.Models;
@@ -16,6 +17,8 @@ namespace Aplication.Services
         private readonly IProjectCommands _command;
         private readonly IProjectQuery _query;
 
+
+
         public ProjectService(IProjectCommands command, IProjectQuery query)
         {
             _command = command;
@@ -24,6 +27,13 @@ namespace Aplication.Services
 
         public async Task<CreateProjectResponse> CreateProject(ProjectRequest request)
         {
+            //var existingProject = await _query.GetProjectByNameAsync(request.ProjectReqName);
+
+            //if (existingProject != null)
+            //{
+            //   throw new InvalidOperationException("A project with the same name already exists.");
+            //}
+
             Projects project = new Projects
             {
                 ProjectName = request.ProjectReqName,
@@ -47,24 +57,34 @@ namespace Aplication.Services
             await _command.InsertProject(project);
             return new CreateProjectResponse
             {
-                ProjectName =project.ProjectName,
+                ProjectName = project.ProjectName,
                 StartDate = project.StartDate,
                 EndDate = project.EndDate,
-                CampaignTypes= new CreateCampaignTypesResponse
+                CampaignTypes = new CreateCampaignTypesResponse
                 {
-                   Name=project.CampaignTypes.Name,
+                    Name = project.CampaignTypes.Name,
 
                 },
-                Clients=new CreateClientResponse
+                Clients = new CreateClientResponse
                 {
-                    Name= project.Clients.Name,
-                    Email=project.Clients.Email,
-                    Phone=project.Clients.Phone,
-                    Company=project.Clients.Company,
-                    Address=project.Clients.Address
+                    Name = project.Clients.Name,
+                    Email = project.Clients.Email,
+                    Phone = project.Clients.Phone,
+                    Company = project.Clients.Company,
+                    Address = project.Clients.Address
                 }
 
             };
         }
+
+        public async Task<PagedResult<Projects>> GetProjectsAsync(string projectName = null, 
+            int? campaignTypeId = null, 
+            int? clientId = null, 
+            int pageNumber = 1, 
+            int pageSize = 10)
+        {
+            return await _query.GetProjectsAsync(projectName, campaignTypeId, clientId, pageNumber, pageSize);
+        }
+
     }
 }

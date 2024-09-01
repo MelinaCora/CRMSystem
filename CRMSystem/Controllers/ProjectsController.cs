@@ -1,5 +1,6 @@
 ﻿using Aplication.Interfaces;
 using Aplication.Request;
+using Aplication.Responses;
 using Aplication.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,9 +21,28 @@ namespace CRMSystem.Controllers
 
         [HttpPost]
         public async Task<IActionResult> CreateProject(ProjectRequest request)
-        {
-            var result = await _service.CreateProject(request);
-            return new JsonResult(result) { StatusCode = 201 };
+        {           
+           var result = await _service.CreateProject(request);
+           return new JsonResult(result) { StatusCode = 201 };
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProjects(
+            string projectName, 
+            int? campaignTypeId, 
+            int? clientId, 
+            int pageNumber = 1, 
+            int pageSize = 10)
+        {
+            var result = await _service.GetProjectsAsync(projectName, campaignTypeId, clientId, pageNumber, pageSize);
+
+            if (result.Items.Count == 0)
+            {
+                return NotFound("No projects found.");
+            }
+
+            return Ok(result);
+        }
+
     }
 }
