@@ -77,6 +77,40 @@ namespace Aplication.Services
             };
         }
 
+        public async Task<ProjectDetailsResponse> GetProjectByIdAsync(Guid projectId)
+        {
+            var project = await _query.GetProjectByIDAsync(projectId);
+            if (project == null)
+            {
+               throw new KeyNotFoundException($"No se encontró un proyecto con el ID {projectId}");
+            }
+
+            // Mapea el proyecto a un objeto de respuesta detallada
+            return new ProjectDetailsResponse
+            {
+                ProjectId = project.ProjectID,
+                ProjectName = project.ProjectName,
+                StartDate = project.StartDate,
+                EndDate = project.EndDate,
+                CampaignType = project.CampaignTypes?.Name,
+                ClientName = project.Clients?.Name,
+                Tasks = project.TaskStatus.Select(t => new TaskResponse
+                {
+                    TaskId = t.TaskID,
+                    TaskName = t.Name,
+                    AssignedTo = t.AssignedUser.Name,
+                    Status = t.Status?.name,
+                }).ToList(),
+                Interactions = project.Interaction.Select(i => new InteractionResponse
+                {
+                    InteractionId = i.InteractionID,
+                    InteractionType = i.Interactionstype?.Name,
+                    Notes = i.Notes
+                }).ToList()
+            };
+        }
+    
+
         public async Task<PagedResult<Projects>> GetProjectsAsync(string projectName = null, 
             int? campaignTypeId = null, 
             int? clientId = null, 

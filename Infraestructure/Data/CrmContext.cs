@@ -152,7 +152,7 @@ namespace CRMSystem.Data
             modelBuilder.Entity<Interactions>()
                 .HasOne(i => i.Interactionstype)
                 .WithMany()
-                .HasForeignKey(i => i.InteractionnType);
+                .HasForeignKey(i => i.InteractionType);
 
             modelBuilder.Entity<Users>().HasData(
                 new Users { UserID = 1, Name = "Joe Done", Email = "jdone@marketing.com" },

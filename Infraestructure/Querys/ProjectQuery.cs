@@ -68,5 +68,15 @@ namespace Infraestructure.Querys
             };
         }
 
+        public async Task<Projects> GetProjectByIdAsync(Guid projectId)
+        {
+            return await _context.Projects
+                                 .Include(p => p.CampaignTypes)
+                                 .Include(p => p.Clients)
+                                 .Include(p => p.TaskStatus)
+                                 .Include(p => p.Interaction)
+                                 .FirstOrDefaultAsync(p => p.ProjectID == projectId);
+        }
+
     }
 }

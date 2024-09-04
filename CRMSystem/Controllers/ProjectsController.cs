@@ -21,17 +21,17 @@ namespace CRMSystem.Controllers
 
         [HttpPost]
         public async Task<IActionResult> CreateProject(ProjectRequest request)
-        {           
-           var result = await _service.CreateProject(request);
-           return new JsonResult(result) { StatusCode = 201 };
+        {
+            var result = await _service.CreateProject(request);
+            return new JsonResult(result) { StatusCode = 201 };
         }
 
         [HttpGet]
         public async Task<IActionResult> GetProjects(
-            string projectName, 
-            int? campaignTypeId, 
-            int? clientId, 
-            int pageNumber = 1, 
+            string projectName,
+            int? campaignTypeId,
+            int? clientId,
+            int pageNumber = 1,
             int pageSize = 10)
         {
             var result = await _service.GetProjectsAsync(projectName, campaignTypeId, clientId, pageNumber, pageSize);
@@ -42,6 +42,19 @@ namespace CRMSystem.Controllers
             }
 
             return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProjectById(Guid id)
+        {
+            var project = await _service.GetProjectByIdAsync(id);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(project);
         }
 
     }

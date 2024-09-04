@@ -19,5 +19,7 @@ namespace Aplication.Interfaces
             int? clientId = null,
             int pageNumber = 1,
             int pageSize = 10);
+
+        Task<ProjectDetailsResponse> GetProjectByIdAsync(Guid projectId);
     }
 }
