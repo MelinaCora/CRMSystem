@@ -26,12 +26,6 @@ namespace Infraestructure.Commands
             _context.Add(project);
             await _context.SaveChangesAsync();
         }
-        
-        public Task AddInteractionToProject()
-        {
-            throw new NotImplementedException();
-        }
-
         public Task AddTaskToProject()
         {
             throw new NotImplementedException();
@@ -40,6 +34,12 @@ namespace Infraestructure.Commands
         public Task UpdateTaskToProject()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task InsertInteraction(Interactions interaction)
+        {
+           _context.Add(interaction);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -3,6 +3,7 @@ using Aplication.Pagination;
 using Aplication.Request;
 using Aplication.Responses;
 using CRMSystem.Models;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -118,6 +119,27 @@ namespace Aplication.Services
             int pageSize = 10)
         {
             return await _query.GetProjectsAsync(projectName, campaignTypeId, clientId, pageNumber, pageSize);
+        }
+
+        public async Task<bool> AddInteractionAsync(CreateInteractionRequest request)
+        {
+            var project = await _query.GetProjectByIdAsync(request.ProjectId);
+
+            if (project == null)
+            {
+                throw new InvalidOperationException("Project not found.");
+            }
+
+            var newinteraction = new Interactions
+            {
+                ProjectID=request.ProjectId,
+                InteractionType= request.InteractionType,
+                Date= request.InteractionDate,
+                Notes=request.Description
+            };
+
+            await _command.InsertInteraction(newinteraction);
+            return true;
         }
 
     }

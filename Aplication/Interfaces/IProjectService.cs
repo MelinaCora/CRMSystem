@@ -21,5 +21,6 @@ namespace Aplication.Interfaces
             int pageSize = 10);
 
         Task<ProjectDetailsResponse> GetProjectByIdAsync(Guid projectId);
+        Task<bool> AddInteractionAsync(CreateInteractionRequest request);
     }
 }

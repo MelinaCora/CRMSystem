@@ -3,6 +3,8 @@ using Aplication.Request;
 using Aplication.Responses;
 using Aplication.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -13,6 +15,7 @@ namespace CRMSystem.Controllers
     public class ProjectsController : ControllerBase
     {
         private readonly IProjectService _service;
+
 
         public ProjectsController(IProjectService service)
         {
@@ -57,5 +60,24 @@ namespace CRMSystem.Controllers
             return Ok(project);
         }
 
+        [HttpPost("projects/{projectId}/interactions")]
+        public async Task<IActionResult> AddInteraction(Guid projectId, [FromBody] CreateInteractionRequest request)
+        {
+            if (projectId != request.ProjectId)
+            {
+                return BadRequest("Project ID mismatch.");
+            }
+
+            var result = await _service.AddInteractionAsync(request);
+
+            if (result)
+            {
+                return Ok("Interaction added successfully.");
+            }
+            else
+            {
+                return StatusCode(500, "An error occurred while adding the interaction.");
+            }
+        }
     }
 }
