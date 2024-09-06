@@ -28,13 +28,7 @@ namespace Aplication.Services
 
         public async Task<CreateProjectResponse> CreateProject(ProjectRequest request)
         {
-            //var existingProject = await _query.GetProjectByNameAsync(request.ProjectReqName);
-
-            //if (existingProject != null)
-            //{
-            //   throw new InvalidOperationException("A project with the same name already exists.");
-            //}
-
+            
             Projects project = new Projects
             {
                 ProjectName = request.ProjectReqName,
