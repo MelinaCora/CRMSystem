@@ -22,5 +22,6 @@ namespace Aplication.Interfaces
 
         Task<ProjectDetailsResponse> GetProjectByIdAsync(Guid projectId);
         Task<bool> AddInteractionAsync(CreateInteractionRequest request);
+        Task <bool> AddTaskToProject(Guid projectId, TaskRequest request);
     }
 }

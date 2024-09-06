@@ -136,5 +136,27 @@ namespace Aplication.Services
             return true;
         }
 
+        public async Task<bool> AddTaskToProject(Guid projectId, TaskRequest request)
+        {
+            var project = await _query.GetProjectByIDAsync(projectId);
+            if (project == null)
+            {
+                throw new InvalidOperationException("Project not found.");
+            }
+
+            var task = new Tasks
+            {
+                TaskID = Guid.NewGuid(),
+                Name = request.TaskName,
+                DueDate = request.DueDate,
+                ProjectID = projectId,
+                AssignedTo = request.AssignedTo,
+                StatusId = request.StatusId
+            };
+
+            await _command.AddTaskToProject(task);
+            return true;
+        }
+
     }
 }

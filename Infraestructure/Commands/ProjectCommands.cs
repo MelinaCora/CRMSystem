@@ -26,9 +26,10 @@ namespace Infraestructure.Commands
             _context.Add(project);
             await _context.SaveChangesAsync();
         }
-        public Task AddTaskToProject()
+        public async Task AddTaskToProject(Tasks task)
         {
-            throw new NotImplementedException();
+            _context.Add(task);
+            await _context.SaveChangesAsync();
         }
   
         public Task UpdateTaskToProject()

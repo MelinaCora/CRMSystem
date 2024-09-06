@@ -11,7 +11,7 @@ namespace Aplication.Interfaces
     public interface IProjectCommands
     {
         Task InsertProject(Projects project);
-        Task AddTaskToProject();
+        Task AddTaskToProject(Tasks task);
         Task UpdateTaskToProject();
         Task InsertInteraction(Interactions interaction);
     }

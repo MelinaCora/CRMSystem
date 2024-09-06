@@ -28,7 +28,7 @@ namespace CRMSystem.Controllers
             var result = await _service.CreateProject(request);
             return new JsonResult(result) { StatusCode = 201 };
         }
-
+        //get all projects with filters and pagination
         [HttpGet]
         public async Task<IActionResult> GetProjects(
             string projectName,
@@ -46,7 +46,7 @@ namespace CRMSystem.Controllers
 
             return Ok(result);
         }
-
+        //get project by ID
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProjectById(Guid id)
         {
@@ -59,7 +59,7 @@ namespace CRMSystem.Controllers
 
             return Ok(project);
         }
-
+        //Add interaction
         [HttpPost("projects/{projectId}/interactions")]
         public async Task<IActionResult> AddInteraction(Guid projectId, [FromBody] CreateInteractionRequest request)
         {
@@ -78,10 +78,29 @@ namespace CRMSystem.Controllers
             {
                 return StatusCode(500, "An error occurred while adding the interaction.");
             }
+        }
+        //AddTask
+        [HttpPost("{projectId}/tasks")]
+        public async Task<IActionResult> AddTaskToProject(Guid projectId, [FromBody] TaskRequest request)
+            {
+                if (!ModelState.IsValid) //validacion
+                {
+                    return BadRequest(ModelState);
+                }
 
-            //AddTask
+                var result = await _service.AddTaskToProject(projectId, request);
+
+                if (result)
+                {
+                    return Ok("Task added successfully.");
+                }
+                else
+                {
+                    return StatusCode(500, "An error occurred while adding the task.");
+                }
+            }
 
             //UpdateTask
-        }
+        
     }
 }
