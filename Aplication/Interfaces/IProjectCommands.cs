@@ -12,7 +12,7 @@ namespace Aplication.Interfaces
     {
         Task InsertProject(Projects project);
         Task AddTaskToProject(Tasks task);
-        Task UpdateTaskToProject();
+        Task UpdateTaskToProject(Tasks updatedTask);
         Task InsertInteraction(Interactions interaction);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Aplication.Interfaces;
 using CRMSystem.Data;
 using CRMSystem.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using System;
 using System.Collections.Generic;
@@ -31,10 +32,26 @@ namespace Infraestructure.Commands
             _context.Add(task);
             await _context.SaveChangesAsync();
         }
-  
-        public Task UpdateTaskToProject()
+
+        public async Task UpdateTaskToProject(Tasks updatedTask)
         {
-            throw new NotImplementedException();
+            
+            var existingTask = await _context.Tasks.FindAsync(updatedTask.TaskID);
+
+            if (existingTask == null)
+            {
+                throw new KeyNotFoundException("Task not found.");
+            }
+
+            // Actualizar los campos de la tarea con los nuevos valores
+            existingTask.Name = updatedTask.Name;
+            existingTask.DueDate = updatedTask.DueDate;
+            existingTask.AssignedTo = updatedTask.AssignedTo;
+            existingTask.StatusId = updatedTask.StatusId;
+
+            // Guardar los cambios en la base de datos
+            _context.Tasks.Update(existingTask);
+            await _context.SaveChangesAsync();
         }
 
         public async Task InsertInteraction(Interactions interaction)

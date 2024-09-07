@@ -60,10 +60,10 @@ namespace CRMSystem.Controllers
             return Ok(project);
         }
         //Add interaction
-        [HttpPost("projects/{projectId}/interactions")]
-        public async Task<IActionResult> AddInteraction(Guid projectId, [FromBody] CreateInteractionRequest request)
+        [HttpPost("{id}/interactions")]
+        public async Task<IActionResult> AddInteraction(Guid id, [FromBody] CreateInteractionRequest request)
         {
-            if (projectId != request.ProjectId)
+            if (id != request.ProjectId)
             {
                 return BadRequest("Project ID mismatch.");
             }
@@ -80,15 +80,15 @@ namespace CRMSystem.Controllers
             }
         }
         //AddTask
-        [HttpPost("{projectId}/tasks")]
-        public async Task<IActionResult> AddTaskToProject(Guid projectId, [FromBody] TaskRequest request)
-            {
+        [HttpPost("{id}/tasks")]
+        public async Task<IActionResult> AddTaskToProject(Guid id, [FromBody] TaskRequest request)
+        {
                 if (!ModelState.IsValid) //validacion
                 {
                     return BadRequest(ModelState);
                 }
 
-                var result = await _service.AddTaskToProject(projectId, request);
+                var result = await _service.AddTaskToProject(id, request);
 
                 if (result)
                 {
@@ -98,9 +98,32 @@ namespace CRMSystem.Controllers
                 {
                     return StatusCode(500, "An error occurred while adding the task.");
                 }
+        }
+
+        [HttpPut("tasks/{id}")]
+        public async Task<IActionResult> UpdateTask(Guid id, [FromBody] TaskRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
             }
 
-            //UpdateTask
-        
+            try
+            {
+                
+                var updatedTask = await _service.UpdateTaskAsync(id, request);
+
+                
+                return Ok(updatedTask);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound("Task not found.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
     }
 }

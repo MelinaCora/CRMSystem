@@ -17,13 +17,15 @@ namespace Aplication.Services
     {
         private readonly IProjectCommands _command;
         private readonly IProjectQuery _query;
+        private readonly ITaskQuery _taskQuery;
+        private readonly ITaskCommand _taskCommand;
 
-
-
-        public ProjectService(IProjectCommands command, IProjectQuery query)
+        public ProjectService(IProjectCommands command, IProjectQuery query, ITaskQuery taskQuery, ITaskCommand taskCommand)
         {
             _command = command;
             _query = query;
+            _taskQuery = taskQuery;
+            _taskCommand = taskCommand;
         }
 
         public async Task<CreateProjectResponse> CreateProject(ProjectRequest request)
@@ -93,8 +95,8 @@ namespace Aplication.Services
                 {
                     TaskId = t.TaskID,
                     TaskName = t.Name,
-                    AssignedTo = t.AssignedUser.Name,
-                    Status = t.Status?.name,
+                    AssignedTo = t.AssignedTo,
+                    Status = t.StatusId,
                 }).ToList(),
                 Interactions = project.Interaction.Select(i => new InteractionResponse
                 {
@@ -158,5 +160,35 @@ namespace Aplication.Services
             return true;
         }
 
+        public async Task<TaskResponse> UpdateTaskAsync(Guid taskId, TaskRequest request)
+        {
+            
+            var task = await _taskQuery.GetTaskByIdAsync(taskId);
+
+            if (task == null)
+            {
+                throw new KeyNotFoundException("Task not found.");
+            }
+
+            
+            task.Name = request.TaskName;
+            task.DueDate = request.DueDate;
+            task.AssignedTo = request.AssignedTo;
+            task.StatusId = request.StatusId;
+
+            
+            await _taskCommand.UpdateTaskAsync(task); 
+
+            
+            var taskResponse = new TaskResponse
+            {
+                TaskId = task.TaskID,
+                TaskName = task.Name,
+                AssignedTo = task.AssignedTo, 
+                Status = task.StatusId          
+            };
+
+            return taskResponse;
+        }
     }
 }

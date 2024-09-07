@@ -38,6 +38,9 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IProjectCommands, ProjectCommands>();
 builder.Services.AddScoped<IProjectQuery, ProjectQuery>();
 
+builder.Services.AddScoped<ITaskCommand, TaskCommand>();
+builder.Services.AddScoped<ITaskQuery, TaskQuery>();
+
 
 
 
