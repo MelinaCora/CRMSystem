@@ -24,8 +24,18 @@ namespace Infraestructure.Commands
 
         public async Task InsertProject(Projects project)
         {
-            _context.Add(project);
-            await _context.SaveChangesAsync();
+            var existingProject = await _context.Projects
+                .FirstOrDefaultAsync(p => p.ProjectName == project.ProjectName);
+
+            if (existingProject != null)
+            {
+                throw new InvalidOperationException("A project with the same name already exists.");
+            }
+            else
+            {
+                _context.Add(project);
+                await _context.SaveChangesAsync();
+            }
         }
         public async Task AddTaskToProject(Tasks task)
         {

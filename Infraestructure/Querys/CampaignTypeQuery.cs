@@ -25,5 +25,10 @@ namespace Infraestructure.Querys
 
             return await _context.CampaignTypes.ToListAsync();
         }
+
+        public async Task<CampaignTypes> GetCampaignTypeByIdAsync(int campaignTypeId)
+        {
+            return await _context.CampaignTypes.FirstOrDefaultAsync(ct => ct.Id == campaignTypeId);
+        }
     }
 }

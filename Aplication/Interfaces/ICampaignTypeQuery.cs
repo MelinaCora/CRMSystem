@@ -10,5 +10,6 @@ namespace Aplication.Interfaces
     public  interface ICampaignTypeQuery
     {
         Task<List<CampaignTypes>> GetAllCampaignTypes();
+        Task<CampaignTypes> GetCampaignTypeByIdAsync(int campaignTypeId);
     }
 }

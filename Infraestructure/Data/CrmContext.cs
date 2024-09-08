@@ -107,6 +107,10 @@ namespace CRMSystem.Data
                 .WithMany()
                 .HasForeignKey(p => p.ClientID);
 
+            modelBuilder.Entity<Projects>()
+                .HasIndex(p => p.ProjectName)
+                .IsUnique();
+
             modelBuilder.Entity<Tasks>()
                 .HasKey(t => t.TaskID);
 

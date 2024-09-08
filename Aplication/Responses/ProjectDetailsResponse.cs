@@ -12,7 +12,7 @@ namespace Aplication.Responses
         public string ProjectName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public string CampaignType { get; set; }
+        public int CampaignType { get; set; }
         public string ClientName { get; set; }
         public List<TaskResponse> Tasks { get; set; }
         public List<InteractionResponse> Interactions { get; set; }

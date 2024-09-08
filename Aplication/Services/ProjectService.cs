@@ -19,28 +19,33 @@ namespace Aplication.Services
         private readonly IProjectQuery _query;
         private readonly ITaskQuery _taskQuery;
         private readonly ITaskCommand _taskCommand;
+        private readonly ICampaignTypeQuery _campaignTypeQuery;
 
-        public ProjectService(IProjectCommands command, IProjectQuery query, ITaskQuery taskQuery, ITaskCommand taskCommand)
+        public ProjectService(IProjectCommands command, IProjectQuery query, ITaskQuery taskQuery, ITaskCommand taskCommand, ICampaignTypeQuery campaignTypeQuery)
         {
             _command = command;
             _query = query;
             _taskQuery = taskQuery;
             _taskCommand = taskCommand;
+            _campaignTypeQuery = campaignTypeQuery;
         }
 
         public async Task<CreateProjectResponse> CreateProject(ProjectRequest request)
         {
-            
+            var campaignType = await _campaignTypeQuery.GetCampaignTypeByIdAsync(request.reqCampaignID);
+
+            if (campaignType == null)
+            {
+                throw new KeyNotFoundException("CampaignType not found.");
+            }
+
+
             Projects project = new Projects
             {
                 ProjectName = request.ProjectReqName,
                 StartDate = request.reqStartDate,
                 EndDate = request.reqEndDate,
-                CampaignTypes = new CampaignTypes
-                {
-                    Name = request.reqCampaignName,
-
-                },
+                CampaignType = campaignType.Id,
                 Clients = new Clients
                 {
                     Name = request.reqClientName,
@@ -59,7 +64,7 @@ namespace Aplication.Services
                 EndDate = project.EndDate,
                 CampaignTypes = new CreateCampaignTypesResponse
                 {
-                    Name = project.CampaignTypes.Name,
+                    Id = project.CampaignType,
 
                 },
                 Clients = new CreateClientResponse
@@ -89,7 +94,7 @@ namespace Aplication.Services
                 ProjectName = project.ProjectName,
                 StartDate = project.StartDate,
                 EndDate = project.EndDate,
-                CampaignType = project.CampaignTypes?.Name,
+                CampaignType = project.CampaignType,
                 ClientName = project.Clients?.Name,
                 Tasks = project.TaskStatus.Select(t => new TaskResponse
                 {

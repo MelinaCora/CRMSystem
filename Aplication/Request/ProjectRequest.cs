@@ -11,7 +11,7 @@ namespace Aplication.Request
         public string ProjectReqName { get; set; }
         public DateTime reqStartDate { get; set; }
         public DateTime reqEndDate { get; set; }
-        public string reqCampaignName { get; set; }
+        public int reqCampaignID { get; set; }
         public string reqClientName { get; set; }
         public string reqClientEmail { get; set; }
         public string reqClientPhone { get; set; }
