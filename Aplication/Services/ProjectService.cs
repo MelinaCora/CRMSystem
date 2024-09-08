@@ -20,14 +20,16 @@ namespace Aplication.Services
         private readonly ITaskQuery _taskQuery;
         private readonly ITaskCommand _taskCommand;
         private readonly ICampaignTypeQuery _campaignTypeQuery;
+        private readonly IClientQuery _clientQuery;
 
-        public ProjectService(IProjectCommands command, IProjectQuery query, ITaskQuery taskQuery, ITaskCommand taskCommand, ICampaignTypeQuery campaignTypeQuery)
+        public ProjectService(IProjectCommands command, IProjectQuery query, ITaskQuery taskQuery, ITaskCommand taskCommand, ICampaignTypeQuery campaignTypeQuery, IClientQuery clientQuery)
         {
             _command = command;
             _query = query;
             _taskQuery = taskQuery;
             _taskCommand = taskCommand;
             _campaignTypeQuery = campaignTypeQuery;
+            _clientQuery = clientQuery;
         }
 
         public async Task<CreateProjectResponse> CreateProject(ProjectRequest request)
@@ -38,6 +40,12 @@ namespace Aplication.Services
             {
                 throw new KeyNotFoundException("CampaignType not found.");
             }
+            var client = await _clientQuery.GetClientByIdAsync(request.ClientID);
+
+            if (client == null)
+            {
+                throw new KeyNotFoundException("Client not found.");
+            }
 
 
             Projects project = new Projects
@@ -46,14 +54,7 @@ namespace Aplication.Services
                 StartDate = request.reqStartDate,
                 EndDate = request.reqEndDate,
                 CampaignType = campaignType.Id,
-                Clients = new Clients
-                {
-                    Name = request.reqClientName,
-                    Email = request.reqClientEmail,
-                    Phone = request.reqClientPhone,
-                    Company = request.reqClientCompany,
-                    Address = request.reqClientAddress
-                }
+                Clients = client
             };
 
             await _command.InsertProject(project);
@@ -69,11 +70,12 @@ namespace Aplication.Services
                 },
                 Clients = new CreateClientResponse
                 {
-                    Name = project.Clients.Name,
-                    Email = project.Clients.Email,
-                    Phone = project.Clients.Phone,
-                    Company = project.Clients.Company,
-                    Address = project.Clients.Address
+                    ClientID = client.ClientID,
+                    Name = client.Name,
+                    Email = client.Email,
+                    Phone = client.Phone,
+                    Company = client.Company,
+                    Address = client.Address
                 }
 
             };

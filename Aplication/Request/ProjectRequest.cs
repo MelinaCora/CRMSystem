@@ -12,11 +12,7 @@ namespace Aplication.Request
         public DateTime reqStartDate { get; set; }
         public DateTime reqEndDate { get; set; }
         public int reqCampaignID { get; set; }
-        public string reqClientName { get; set; }
-        public string reqClientEmail { get; set; }
-        public string reqClientPhone { get; set; }
-        public string reqClientCompany { get; set; }
-        public string reqClientAddress { get; set; }
+        public int ClientID { get; set; }  
 
     }
 
