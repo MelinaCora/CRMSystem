@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Aplication.Responses
 {
@@ -14,6 +15,8 @@ namespace Aplication.Responses
         public string Phone { get; set; }
         public string Company { get; set; }
         public string Address { get; set; }
+        
+        public DateTime CreateDate { get; set; }
 
     }
 }

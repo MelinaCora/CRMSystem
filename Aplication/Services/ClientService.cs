@@ -21,7 +21,8 @@ namespace Aplication.Services
             _commands = commands;
             _query = query;
         }
-        public async Task<CreateClientResponse> CreateClient(ClientRequest request)
+
+        public async Task<Clients> CreateClient(ClientRequest request)
         {
             Clients Client = new Clients()
             {
@@ -33,7 +34,7 @@ namespace Aplication.Services
             };
 
             await _commands.InsertClient(Client);
-            return new CreateClientResponse
+            return new Clients
             {
 
                 Name = Client.Name,

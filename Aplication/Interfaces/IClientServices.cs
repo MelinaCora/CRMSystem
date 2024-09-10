@@ -11,7 +11,7 @@ namespace Aplication.Interfaces
 {
     public interface IClientServices
     {
-       Task <CreateClientResponse> CreateClient(ClientRequest request);
+       Task <Clients> CreateClient(ClientRequest request);
 
        Task <List<Clients>> GetAll();
 

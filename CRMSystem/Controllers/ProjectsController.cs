@@ -31,7 +31,7 @@ namespace CRMSystem.Controllers
         //get all projects with filters and pagination
         [HttpGet]
         public async Task<IActionResult> GetProjects(
-            string projectName,
+            string? projectName,
             int? campaignTypeId,
             int? clientId,
             int pageNumber = 1,

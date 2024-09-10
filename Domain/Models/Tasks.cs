@@ -5,6 +5,8 @@
         public Guid TaskID { get; set; }
         public string Name { get; set; }
         public DateTime DueDate { get; set; }
+        public DateTime CreateDate { get; set; }
+        public DateTime UpdateDate  { get; set; }
 
         public Guid ProjectID { get; set; }        // Foreign Key
         public Projects Project { get; set; }

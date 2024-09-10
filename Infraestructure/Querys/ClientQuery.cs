@@ -1,4 +1,5 @@
 ﻿using Aplication.Interfaces;
+using Aplication.Responses;
 using CRMSystem.Data;
 using CRMSystem.Models;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,7 @@ namespace Infraestructure.Querys
             _context = context;
         }
 
-        public async Task <List<Clients>> GetListClientsAsync()
+        public async Task<List<Clients>> GetListClientsAsync()
         {
             return await _context.Clients.ToListAsync();
         }
@@ -34,3 +35,4 @@ namespace Infraestructure.Querys
         }
     }
 }
+

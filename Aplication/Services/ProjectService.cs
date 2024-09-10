@@ -75,7 +75,7 @@ namespace Aplication.Services
                     Email = client.Email,
                     Phone = client.Phone,
                     Company = client.Company,
-                    Address = client.Address
+                    Address = client.Address,
                 }
 
             };
@@ -84,6 +84,7 @@ namespace Aplication.Services
         public async Task<ProjectDetailsResponse> GetProjectByIdAsync(Guid projectId)
         {
             var project = await _query.GetProjectByIDAsync(projectId);
+
             if (project == null)
             {
                throw new KeyNotFoundException($"No se encontró un proyecto con el ID {projectId}");
@@ -115,7 +116,7 @@ namespace Aplication.Services
         }
     
 
-        public async Task<PagedResult<Projects>> GetProjectsAsync(string projectName = null, 
+        public async Task<PagedResult<Projects>> GetProjectsAsync(string? projectName= null, 
             int? campaignTypeId = null, 
             int? clientId = null, 
             int pageNumber = 1, 

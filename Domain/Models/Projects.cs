@@ -8,6 +8,8 @@ namespace CRMSystem.Models
         public string ProjectName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public DateTime CreateDate { get; set; }
+        public DateTime UpdateDate { get; set; }
 
         public int CampaignType { get; set; }    // Foreign Key
         public CampaignTypes CampaignTypes { get; set; }
