@@ -1,4 +1,5 @@
-﻿using Aplication.Interfaces;
+﻿using Aplication.Exceptions;
+using Aplication.Interfaces;
 using Aplication.Pagination;
 using Aplication.Request;
 using Aplication.Responses;
@@ -34,19 +35,25 @@ namespace Aplication.Services
 
         public async Task<CreateProjectResponse> CreateProject(ProjectRequest request)
         {
+            var existingProject = await _query.GetProjectByNameAsync(request.ProjectReqName);
+            
+            if (existingProject != null)
+            {
+                throw new ProjectNameAlredyExistException("A project with this name already exists.");
+            }
+
             var campaignType = await _campaignTypeQuery.GetCampaignTypeByIdAsync(request.reqCampaignID);
 
             if (campaignType == null)
             {
-                throw new KeyNotFoundException("CampaignType not found.");
+                throw new ObjectNotFoundException("CampaignType not found.");
             }
             var client = await _clientQuery.GetClientByIdAsync(request.ClientID);
 
             if (client == null)
             {
-                throw new KeyNotFoundException("Client not found.");
+                throw new ObjectNotFoundException("Client not found.");
             }
-
 
             Projects project = new Projects
             {
@@ -76,6 +83,7 @@ namespace Aplication.Services
                     Phone = client.Phone,
                     Company = client.Company,
                     Address = client.Address,
+                    CreateDate = DateTime.Now,
                 }
 
             };
@@ -87,10 +95,10 @@ namespace Aplication.Services
 
             if (project == null)
             {
-               throw new KeyNotFoundException($"No se encontró un proyecto con el ID {projectId}");
+               throw new ObjectNotFoundException($"No se encontró un proyecto con el ID {projectId}");
             }
 
-            // Mapea el proyecto a un objeto de respuesta detallada
+           
             return new ProjectDetailsResponse
             {
                 ProjectId = project.ProjectID,
@@ -131,11 +139,12 @@ namespace Aplication.Services
 
             if (project == null)
             {
-                throw new InvalidOperationException("Project not found.");
+                throw new ObjectNotFoundException($"No se encontró un proyecto con el ID ");
             }
 
             var newinteraction = new Interactions
             {
+                InteractionID = Guid.NewGuid(),
                 ProjectID=request.ProjectId,
                 InteractionType= request.InteractionType,
                 Date= request.InteractionDate,
@@ -149,9 +158,10 @@ namespace Aplication.Services
         public async Task<bool> AddTaskToProject(Guid projectId, TaskRequest request)
         {
             var project = await _query.GetProjectByIDAsync(projectId);
+
             if (project == null)
             {
-                throw new InvalidOperationException("Project not found.");
+                throw new ObjectNotFoundException($"No se encontró un proyecto con el ID {projectId}");
             }
 
             var task = new Tasks
@@ -175,7 +185,7 @@ namespace Aplication.Services
 
             if (task == null)
             {
-                throw new KeyNotFoundException("Task not found.");
+                throw new ObjectNotFoundException("Task not found.");
             }
 
             

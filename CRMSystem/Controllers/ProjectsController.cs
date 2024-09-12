@@ -1,4 +1,5 @@
-﻿using Aplication.Interfaces;
+﻿using Aplication.Exceptions;
+using Aplication.Interfaces;
 using Aplication.Request;
 using Aplication.Responses;
 using Aplication.Services;
@@ -22,12 +23,32 @@ namespace CRMSystem.Controllers
             _service = service;
         }
 
+
         [HttpPost]
         public async Task<IActionResult> CreateProject(ProjectRequest request)
         {
-            var result = await _service.CreateProject(request);
-            return new JsonResult(result) { StatusCode = 201 };
+            try
+            {
+                var result = await _service.CreateProject(request);
+                return new JsonResult(result) { StatusCode = 201 };
+            }
+            catch (ProjectNameAlredyExistException ex)
+            {
+                // Retornar un error 400 con el mensaje de que el nombre del proyecto ya existe
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ObjectNotFoundException ex)
+            {
+                // Retornar un error 400 con el mensaje de que no se encontró el objeto (tipo de campaña o cliente)
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                // Para cualquier otro error no manejado, retornar un error 500
+                return StatusCode(500, new { message = "Ocurrió un error inesperado.", details = ex.Message });
+            }
         }
+
         //get all projects with filters and pagination
         [HttpGet]
         public async Task<IActionResult> GetProjects(
@@ -50,14 +71,16 @@ namespace CRMSystem.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProjectById(Guid id)
         {
-            var project = await _service.GetProjectByIdAsync(id);
-
-            if (project == null)
+            try
             {
-                return NotFound();
+                var project = await _service.GetProjectByIdAsync(id);                
+                return Ok(project);
             }
-
-            return Ok(project);
+            catch (ObjectNotFoundException ex)
+            {
+                
+                return BadRequest(new { message = ex.Message });
+            }
         }
         //Add interaction
         [HttpPost("{id}/interactions")]
@@ -68,26 +91,35 @@ namespace CRMSystem.Controllers
                 return BadRequest("Project ID mismatch.");
             }
 
-            var result = await _service.AddInteractionAsync(request);
+            try
+            {
+                var result = await _service.AddInteractionAsync(request);
 
-            if (result)
-            {
-                return Ok("Interaction added successfully.");
+                if (result)
+                {
+                    return Ok("Interaction added successfully.");
+                }
+                else
+                {
+                    return StatusCode(500, "An error occurred while adding the interaction.");
+                }
             }
-            else
+            catch (ObjectNotFoundException ex)
             {
-                return StatusCode(500, "An error occurred while adding the interaction.");
+                return BadRequest(new { message = ex.Message });
             }
         }
         //AddTask
         [HttpPost("{id}/tasks")]
         public async Task<IActionResult> AddTaskToProject(Guid id, [FromBody] TaskRequest request)
         {
-                if (!ModelState.IsValid) //validacion
-                {
-                    return BadRequest(ModelState);
-                }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+            try
+            {
                 var result = await _service.AddTaskToProject(id, request);
 
                 if (result)
@@ -98,9 +130,14 @@ namespace CRMSystem.Controllers
                 {
                     return StatusCode(500, "An error occurred while adding the task.");
                 }
+            }
+            catch (ObjectNotFoundException ex)
+            {
+               return BadRequest(new { message = ex.Message });
+            }
         }
 
-        [HttpPut("tasks/{id}")]
+        [HttpPut("tasks/{Taskid}")]
         public async Task<IActionResult> UpdateTask(Guid id, [FromBody] TaskRequest request)
         {
             if (!ModelState.IsValid)
@@ -110,20 +147,14 @@ namespace CRMSystem.Controllers
 
             try
             {
-                
                 var updatedTask = await _service.UpdateTaskAsync(id, request);
-
-                
                 return Ok(updatedTask);
+
             }
-            catch (KeyNotFoundException)
+            catch (ObjectNotFoundException ex)
             {
-                return NotFound("Task not found.");
+                return BadRequest(new { message = ex.Message });
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
-            }
-        }
+        } 
     }
 }

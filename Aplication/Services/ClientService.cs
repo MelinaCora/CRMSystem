@@ -1,4 +1,5 @@
-﻿using Aplication.Interfaces;
+﻿using Aplication.Exceptions;
+using Aplication.Interfaces;
 using Aplication.Request;
 using Aplication.Responses;
 using CRMSystem.Models;
@@ -24,26 +25,30 @@ namespace Aplication.Services
 
         public async Task<Clients> CreateClient(ClientRequest request)
         {
-            Clients Client = new Clients()
-            {
-                Name = request.Name,
-                Email = request.Email,
-                Company = request.Company,
-                Phone = request.Phone,
-                Address = request.Address,
-            };
+          
+            
+                Clients Client = new Clients()
+                {
+                    Name = request.Name,
+                    Email = request.Email,
+                    Company = request.Company,
+                    Phone = request.Phone,
+                    Address = request.Address,
+                };
 
-            await _commands.InsertClient(Client);
-            return new Clients
-            {
+                await _commands.InsertClient(Client);
+                return new Clients
+                {
 
-                Name = Client.Name,
-                Email = Client.Email,
-                Company = Client.Company,
-                Phone = Client.Phone,
-                Address = Client.Address,
+                    Name = Client.Name,
+                    Email = Client.Email,
+                    Company = Client.Company,
+                    Phone = Client.Phone,
+                    Address = Client.Address,
 
-            };
+                };
+            
+           
         }
 
         public async Task<List<Clients>> GetAll()

@@ -8,6 +8,7 @@ namespace Aplication.Request
 {
     public class ProjectRequest
     {
+        public Guid ProjectID { get; set; }
         public string ProjectReqName { get; set; }
         public DateTime reqStartDate { get; set; }
         public DateTime reqEndDate { get; set; }

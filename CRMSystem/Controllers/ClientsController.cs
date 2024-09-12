@@ -1,4 +1,5 @@
-﻿using Aplication.Interfaces;
+﻿using Aplication.Exceptions;
+using Aplication.Interfaces;
 using Aplication.Request;
 using Aplication.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -29,8 +30,9 @@ namespace CRMSystem.Controllers
         [HttpPost]
         public async Task <IActionResult> CreateClient(ClientRequest request)
         {
-            var result = await _clientService.CreateClient(request);
-            return new JsonResult(result) { StatusCode = 201};
+               var result = await _clientService.CreateClient(request);
+               return new JsonResult(result) { StatusCode = 201 };
+          
         }
     }
 }

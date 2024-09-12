@@ -61,6 +61,11 @@ namespace CRMSystem.Data
                .Property(cl => cl.Address)
                .HasMaxLength(int.MaxValue);
 
+            modelBuilder.Entity<Clients>()
+                .Property(cl => cl.CreateDate)
+                .IsRequired(false)
+                .HasColumnType("datetime");
+
             modelBuilder.Entity<InteractionTypes>()
                 .HasKey(it => it.Id);
 
@@ -136,6 +141,11 @@ namespace CRMSystem.Data
                 .HasOne(t => t.Project)
                 .WithMany(p => p.TaskStatus)
                 .HasForeignKey(t => t.ProjectID);
+
+            modelBuilder.Entity<Tasks>()
+              .Property(t => t.CreateDate)
+              .IsRequired(false)
+              .HasColumnType("datetime");
 
             modelBuilder.Entity<Interactions>()
                 .HasKey(i => i.InteractionID);
