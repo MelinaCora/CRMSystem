@@ -139,12 +139,11 @@ namespace Aplication.Services
                     TaskName = t.Name,
                     TaskStatus = new CreateTaskStatusResponse
                     {
-                        Id = t.Status.Id,
+                        Id = t.StatusId,
                     },
                     Users = new CreateUsersResponse
                     {
                         UserID = t.AssignedTo,
-                        Name = t.AssignedUser?.Name
                     }
                 }).ToList()
                 : new List<TaskResponse>(), //lista vacía si no hay tareas
@@ -155,7 +154,6 @@ namespace Aplication.Services
                     InteractionType = new CreateInteractionTypeResponse
                     {
                         Id = i.InteractionType,
-                        Name = i.Interactionstype.Name,
                     },
                     Notes = i.Notes
                 }).ToList()
