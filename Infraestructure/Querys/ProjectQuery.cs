@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,35 +38,41 @@ namespace Infraestructure.Querys
                 .FirstOrDefaultAsync(p => p.ProjectName == projectName);
         }
 
-        public async Task<PagedResult<Projects>> GetProjectsAsync(string projectName = null, int? campaignTypeId = null, int? clientId = null, int pageNumber = 1, int pageSize = 10)
+        public async Task<PagedResult<Projects>> GetProjectsAsync(string? projectName, int? campaignTypeId, int? clientId, int? offset, int? limit)
         {
             var query = _context.Projects.AsQueryable();
 
+            
             if (!string.IsNullOrEmpty(projectName))
             {
                 query = query.Where(p => p.ProjectName.Contains(projectName));
             }
-
             if (campaignTypeId.HasValue)
             {
                 query = query.Where(p => p.CampaignType == campaignTypeId.Value);
             }
-
             if (clientId.HasValue)
             {
                 query = query.Where(p => p.ClientID == clientId.Value);
             }
 
-            var totalItems = await query.CountAsync();
-            var items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+            int totalItems = await query.CountAsync();
 
-            return new PagedResult<Projects>
+            //LIMIT es en mysql
+            List<Projects> projects = await query
+                .Skip(offset.Value) // Salta el número de filas definidas por offset
+                .Take(limit.Value)  // Toma el número de filas definidas por limit
+                .ToListAsync();
+
+            var pagedResult = new PagedResult<Projects>
             {
-                Items = items,
+                Items = projects,
                 TotalItems = totalItems,
-                PageNumber = pageNumber,
-                PageSize = pageSize
+                PageNumber = (offset ?? 0) / (limit ?? 10) + 1,
+                PageSize = limit.Value
             };
+
+            return pagedResult;
         }
 
         public async Task<Projects> GetProjectByIdAsync(Guid projectId)

@@ -60,9 +60,9 @@ namespace CRMSystem.Controllers
             int? campaign,
             int? client,
             int? offset,
-            int? size)
+            int? limit)
         {
-            var result = await _service.GetProjectsAsync(Name, campaign, client, offset, size);
+            var result = await _service.GetProjectsAsync(Name, campaign, client, offset, limit);
 
             if (result.Items.Count == 0)
             {

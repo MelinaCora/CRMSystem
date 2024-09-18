@@ -15,11 +15,11 @@ namespace Aplication.Interfaces
 
         Task<Projects> GetProjectByNameAsync(string projectName);
 
-        Task<PagedResult<Projects>> GetProjectsAsync(string projectName = null, 
-            int? campaignTypeId = null, 
-            int? clientId = null, 
-            int pageNumber = 1, 
-            int pageSize = 10);
+        Task<PagedResult<Projects>> GetProjectsAsync(string projectName, 
+            int? campaignTypeId, 
+            int? clientId, 
+            int? pageNumber, 
+            int? pageSize);
         Task<Projects> GetProjectByIdAsync(Guid projectId);
     }
 

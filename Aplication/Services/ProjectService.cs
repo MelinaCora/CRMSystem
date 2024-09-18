@@ -165,7 +165,7 @@ namespace Aplication.Services
             int? campaign, 
             int? client, 
             int? offset, 
-            int? size)
+            int? limit)
         {
             // Validación de números negativos
             if (offset.HasValue && offset.Value < 0)
@@ -173,9 +173,17 @@ namespace Aplication.Services
                 throw new InvalidOffsetException("El valor de offset no puede ser negativo.");
             }
 
-            if (size.HasValue && size.Value <= 0)
+            if (limit.HasValue && limit.Value <= 0)
             {
                 throw new InvalidSizeException("El valor de size debe ser mayor que cero.");
+            }
+            if (!offset.HasValue)
+            {
+                offset = 0; // por defecto 0 si el campo esta vacio
+            }
+            if (!limit.HasValue)
+            {
+                limit = 10; // Si no se asigna un size, valor por defecto 10
             }
             // Construir la consulta según los parámetros ingresados
             string filterMessage = "Filtrando por: ";
@@ -191,9 +199,10 @@ namespace Aplication.Services
             {
                 filterMessage += $"Cliente = {client.Value}, ";
             }
-            filterMessage += $"Offset = {offset.Value}, Size = {size.Value}";
+            
+            filterMessage += $"Offset = {offset.Value}, Size = {limit.Value}";
 
-            return await _query.GetProjectsAsync(Name, campaign, client, offset.Value, size.Value);
+            return await _query.GetProjectsAsync(Name, campaign, client, offset.Value, limit.Value);
         }
 
         public async Task<bool> AddInteractionAsync(Guid projectId,CreateInteractionRequest request)
