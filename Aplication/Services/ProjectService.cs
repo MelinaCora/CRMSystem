@@ -161,13 +161,13 @@ namespace Aplication.Services
             };
         }  
 
-        public async Task<PagedResult<Projects>> GetProjectsAsync(string? projectName= null, 
-            int? campaignTypeId = null, 
-            int? clientId = null, 
-            int pageNumber = 1, 
-            int pageSize = 10)
+        public async Task<PagedResult<Projects>> GetProjectsAsync(string? Name, 
+            int? campaign, 
+            int? client, 
+            int? offset, 
+            int? size)
         {
-            return await _query.GetProjectsAsync(projectName, campaignTypeId, clientId, pageNumber, pageSize);
+            return await _query.GetProjectsAsync(Name, campaign, client, offset.Value, size.Value);
         }
 
         public async Task<bool> AddInteractionAsync(Guid projectId,CreateInteractionRequest request)

@@ -56,13 +56,13 @@ namespace CRMSystem.Controllers
         
         [HttpGet]
         public async Task<IActionResult> GetProjects(
-            string? projectName,
-            int? campaignTypeId,
-            int? clientId,
-            int pageNumber = 1,
-            int pageSize = 10)
+            string? Name,
+            int? campaign,
+            int? client,
+            int? offset,
+            int? size)
         {
-            var result = await _service.GetProjectsAsync(projectName, campaignTypeId, clientId, pageNumber, pageSize);
+            var result = await _service.GetProjectsAsync(Name, campaign, client, offset, size);
 
             if (result.Items.Count == 0)
             {

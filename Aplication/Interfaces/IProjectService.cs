@@ -14,11 +14,11 @@ namespace Aplication.Interfaces
     public interface IProjectService
     {
         Task<CreateProjectResponse> CreateProject(ProjectRequest project);
-        Task<PagedResult<Projects>> GetProjectsAsync(string projectName = null,
-            int? campaignTypeId = null,
-            int? clientId = null,
-            int pageNumber = 1,
-            int pageSize = 10);
+        Task<PagedResult<Projects>> GetProjectsAsync(string Name = null,
+            int? campaign = null,
+            int? client = null,
+            int? offset = null,
+            int? size = null);
 
         Task<ProjectDetailsResponse> GetProjectByIdAsync(Guid projectId);
         Task<bool> AddInteractionAsync(Guid projectId,CreateInteractionRequest request);
