@@ -10,5 +10,6 @@ namespace Aplication.Interfaces
     public interface ITaskQuery
     {
         Task<Tasks> GetTaskByIdAsync(Guid taskId);
+        Task<List<Tasks>> GetAllTaskByIdAsync(Guid ProjectID);
     }
 }

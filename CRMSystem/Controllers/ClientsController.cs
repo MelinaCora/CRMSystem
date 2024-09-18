@@ -30,9 +30,15 @@ namespace CRMSystem.Controllers
         [HttpPost]
         public async Task <IActionResult> CreateClient(ClientRequest request)
         {
-               var result = await _clientService.CreateClient(request);
-               return new JsonResult(result) { StatusCode = 201 };
-          
+            try
+            {
+                var result = await _clientService.CreateClient(request);
+                return new JsonResult(result) { StatusCode = 201 };
+            }
+            catch (RequiredParameterException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

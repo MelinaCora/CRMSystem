@@ -19,6 +19,6 @@ namespace CRMSystem.Models
         public Clients Clients { get; set; }    
 
         public ICollection<Tasks> TaskStatus { get; set; }
-        public ICollection<Interactions> Interaction { get; set; }
+        public List<Interactions> Interaction { get; set; }
     }
 }

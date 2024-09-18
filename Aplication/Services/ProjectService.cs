@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TaskStatus = CRMSystem.Models.TaskStatus;
 
 namespace Aplication.Services
 {
@@ -32,17 +33,32 @@ namespace Aplication.Services
             _campaignTypeQuery = campaignTypeQuery;
             _clientQuery = clientQuery;
         }
-
         public async Task<CreateProjectResponse> CreateProject(ProjectRequest request)
         {
-            var existingProject = await _query.GetProjectByNameAsync(request.ProjectReqName);
+
+            if (string.IsNullOrEmpty(request.Name))
+            {
+                throw new RequiredParameterException("Error. Name is required");
+            }
+
+            if (request.CampaignID == null)
+            {
+                throw new RequiredParameterException("Error. CampaignID is required");
+            }
+
+            if (request.ClientID == null)
+            {
+                throw new RequiredParameterException("Error. ClientID is required");
+            }
+
+            var existingProject = await _query.GetProjectByNameAsync(request.Name);
             
             if (existingProject != null)
             {
                 throw new ProjectNameAlredyExistException("A project with this name already exists.");
             }
 
-            var campaignType = await _campaignTypeQuery.GetCampaignTypeByIdAsync(request.reqCampaignID);
+            var campaignType = await _campaignTypeQuery.GetCampaignTypeByIdAsync(request.CampaignID);
 
             if (campaignType == null)
             {
@@ -53,16 +69,15 @@ namespace Aplication.Services
             if (client == null)
             {
                 throw new ObjectNotFoundException("Client not found.");
-            }
-
+            }                      
             Projects project = new Projects
             {
-                ProjectName = request.ProjectReqName,
-                StartDate = request.reqStartDate,
-                EndDate = request.reqEndDate,
+                ProjectName = request.Name,
+                StartDate = request.Start,
+                EndDate = request.End,
                 CampaignType = campaignType.Id,
-                Clients = client
-            };
+                Clients = client,
+            };      
 
             await _command.InsertProject(project);
             return new CreateProjectResponse
@@ -73,7 +88,7 @@ namespace Aplication.Services
                 CampaignTypes = new CreateCampaignTypesResponse
                 {
                     Id = project.CampaignType,
-
+                    Name = project.CampaignTypes.Name
                 },
                 Clients = new CreateClientResponse
                 {
@@ -84,9 +99,8 @@ namespace Aplication.Services
                     Company = client.Company,
                     Address = client.Address,
                     CreateDate = DateTime.Now,
-                }
-
-            };
+                },
+            }; 
         }
 
         public async Task<ProjectDetailsResponse> GetProjectByIdAsync(Guid projectId)
@@ -97,32 +111,57 @@ namespace Aplication.Services
             {
                throw new ObjectNotFoundException($"No se encontró un proyecto con el ID {projectId}");
             }
-
-           
             return new ProjectDetailsResponse
             {
-                ProjectId = project.ProjectID,
+                ProjectID = project.ProjectID,
                 ProjectName = project.ProjectName,
                 StartDate = project.StartDate,
                 EndDate = project.EndDate,
-                CampaignType = project.CampaignType,
-                ClientName = project.Clients?.Name,
-                Tasks = project.TaskStatus.Select(t => new TaskResponse
+                CampaignTypes = new CreateCampaignTypesResponse
+                {
+                    Id = project.CampaignType,
+                    Name = project.CampaignTypes.Name,
+                },
+                Clients = new CreateClientResponse
+                {
+                    ClientID = project.Clients.ClientID,
+                    Name = project.Clients.Name,
+                    Email = project.Clients.Email,
+                    Phone = project.Clients.Phone,
+                    Company = project.Clients.Company,
+                    Address = project.Clients.Address,
+                    CreateDate = project.Clients.CreateDate,
+                },
+                Tasks = project.TaskStatus != null
+                ? project.TaskStatus.Select(t => new TaskResponse
                 {
                     TaskId = t.TaskID,
                     TaskName = t.Name,
-                    AssignedTo = t.AssignedTo,
-                    Status = t.StatusId,
-                }).ToList(),
-                Interactions = project.Interaction.Select(i => new InteractionResponse
+                    TaskStatus = new CreateTaskStatusResponse
+                    {
+                        Id = t.Status.Id,
+                    },
+                    Users = new CreateUsersResponse
+                    {
+                        UserID = t.AssignedTo,
+                        Name = t.AssignedUser?.Name
+                    }
+                }).ToList()
+                : new List<TaskResponse>(), //lista vacía si no hay tareas
+                Interactions = project.Interaction != null
+                ? project.Interaction.Select(i => new InteractionResponse
                 {
                     InteractionId = i.InteractionID,
-                    InteractionType = i.Interactionstype?.Name,
+                    InteractionType = new CreateInteractionTypeResponse
+                    {
+                        Id = i.InteractionType,
+                        Name = i.Interactionstype.Name,
+                    },
                     Notes = i.Notes
                 }).ToList()
+                : new List<InteractionResponse>() //lista vacía si no hay interacciones
             };
-        }
-    
+        }  
 
         public async Task<PagedResult<Projects>> GetProjectsAsync(string? projectName= null, 
             int? campaignTypeId = null, 
@@ -133,7 +172,7 @@ namespace Aplication.Services
             return await _query.GetProjectsAsync(projectName, campaignTypeId, clientId, pageNumber, pageSize);
         }
 
-        public async Task<bool> AddInteractionAsync(CreateInteractionRequest request)
+        public async Task<bool> AddInteractionAsync(Guid projectId,CreateInteractionRequest request)
         {
             var project = await _query.GetProjectByIdAsync(request.ProjectId);
 
@@ -145,7 +184,6 @@ namespace Aplication.Services
             var newinteraction = new Interactions
             {
                 InteractionID = Guid.NewGuid(),
-                ProjectID=request.ProjectId,
                 InteractionType= request.InteractionType,
                 Date= request.InteractionDate,
                 Notes=request.Description
@@ -202,8 +240,16 @@ namespace Aplication.Services
             {
                 TaskId = task.TaskID,
                 TaskName = task.Name,
-                AssignedTo = task.AssignedTo, 
-                Status = task.StatusId          
+                Users = new CreateUsersResponse
+                {
+                    UserID= task.AssignedTo,
+                    Name= task.AssignedUser.Name,
+                },
+                TaskStatus = new CreateTaskStatusResponse
+                {
+                    Id = task.Status.Id,
+                    Name = task.Status.Name,
+                },
             };
 
             return taskResponse;

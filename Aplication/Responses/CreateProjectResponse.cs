@@ -14,7 +14,7 @@ namespace Aplication.Responses
         public DateTime EndDate { get; set; }
         public CreateCampaignTypesResponse CampaignTypes { get; set; } 
         public CreateClientResponse Clients { get; set; }
-    
+   
     }
 
     public class CreateCampaignTypesResponse
@@ -22,4 +22,6 @@ namespace Aplication.Responses
         public int Id { get; set; }
         public string Name { get; set; }
     }
+      
+    
 }

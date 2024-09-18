@@ -34,12 +34,16 @@ namespace CRMSystem.Controllers
             }
             catch (ProjectNameAlredyExistException ex)
             {
-                // Retornar un error 400 con el mensaje de que el nombre del proyecto ya existe
+                
                 return BadRequest(new { message = ex.Message });
             }
             catch (ObjectNotFoundException ex)
             {
-                // Retornar un error 400 con el mensaje de que no se encontró el objeto (tipo de campaña o cliente)
+                
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (RequiredParameterException ex)
+            {
                 return BadRequest(new { message = ex.Message });
             }
             catch (Exception ex)
@@ -49,7 +53,7 @@ namespace CRMSystem.Controllers
             }
         }
 
-        //get all projects with filters and pagination
+        
         [HttpGet]
         public async Task<IActionResult> GetProjects(
             string? projectName,
@@ -76,14 +80,13 @@ namespace CRMSystem.Controllers
                 var project = await _service.GetProjectByIdAsync(id);                
                 return Ok(project);
             }
-            catch (ObjectNotFoundException ex)
-            {
+            catch (ObjectNotFoundException ex)            {
                 
                 return BadRequest(new { message = ex.Message });
             }
         }
         //Add interaction
-        [HttpPost("{id}/interactions")]
+        [HttpPatch("{id}/interactions")]
         public async Task<IActionResult> AddInteraction(Guid id, [FromBody] CreateInteractionRequest request)
         {
             if (id != request.ProjectId)
@@ -110,7 +113,7 @@ namespace CRMSystem.Controllers
             }
         }
         //AddTask
-        [HttpPost("{id}/tasks")]
+        [HttpPatch("{id}/tasks")]
         public async Task<IActionResult> AddTaskToProject(Guid id, [FromBody] TaskRequest request)
         {
             if (!ModelState.IsValid)

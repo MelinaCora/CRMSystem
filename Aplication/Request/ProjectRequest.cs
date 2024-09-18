@@ -9,12 +9,11 @@ namespace Aplication.Request
     public class ProjectRequest
     {
         public Guid ProjectID { get; set; }
-        public string ProjectReqName { get; set; }
-        public DateTime reqStartDate { get; set; }
-        public DateTime reqEndDate { get; set; }
-        public int reqCampaignID { get; set; }
+        public string Name { get; set; }
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+        public int CampaignID { get; set; }
         public int ClientID { get; set; }  
-
     }
 
 }

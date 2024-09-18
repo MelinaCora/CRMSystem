@@ -25,14 +25,37 @@ namespace Aplication.Services
 
         public async Task<Clients> CreateClient(ClientRequest request)
         {
-          
-            
-                Clients Client = new Clients()
+            if (string.IsNullOrEmpty(request.Name))
+            {
+               throw new RequiredParameterException("Error. Client Name is required");
+            }
+
+            if (string.IsNullOrEmpty(request.Email))
+            {
+                throw new RequiredParameterException("Error. Client Email is required");
+            }
+
+            if (string.IsNullOrEmpty(request.Phone))
+            {
+                throw new RequiredParameterException("Error. Client Phone is required");
+            }
+
+            if (string.IsNullOrEmpty(request.Company))
+            {
+                throw new RequiredParameterException("Error. Client Company is required");
+            }
+
+            if (string.IsNullOrEmpty(request.Address))
+            {
+                throw new RequiredParameterException("Error. Client Adress is required");
+            }
+
+            Clients Client = new Clients()
                 {
                     Name = request.Name,
-                    Email = request.Email,
-                    Company = request.Company,
+                    Email = request.Email,                    
                     Phone = request.Phone,
+                    Company = request.Company,
                     Address = request.Address,
                 };
 

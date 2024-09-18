@@ -10,10 +10,8 @@ namespace Aplication.Responses
     {
         public Guid TaskId { get; set; }
         public string TaskName { get; set; }
-        public int AssignedTo { get; set; }
-        public int Status { get; set; }
-        public CreateUsersResponse CreateUsersResponse { get; set; }
-        public CreateTaskStatusResponse CreateTaskStatusResponse { get; set; }
+        public CreateUsersResponse Users { get; set; }
+        public CreateTaskStatusResponse TaskStatus { get; set; }
 
     }
 
@@ -27,6 +25,6 @@ namespace Aplication.Responses
     public class CreateTaskStatusResponse
     {
         public int Id { get; set; }
-        public string name { get; set; }
+        public string Name { get; set; }
     }
 }

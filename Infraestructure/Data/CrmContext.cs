@@ -88,7 +88,7 @@ namespace CRMSystem.Data
                 .HasKey(ts => ts.Id);
 
             modelBuilder.Entity<TaskStatus>()
-                .Property(ts => ts.name)
+                .Property(ts => ts.Name)
                 .HasMaxLength(25);
 
             modelBuilder.Entity<Projects>()
@@ -177,11 +177,11 @@ namespace CRMSystem.Data
             );
 
             modelBuilder.Entity<TaskStatus>().HasData(
-                new TaskStatus { Id = 1, name = "Pending" },
-                new TaskStatus { Id = 2, name = "In Progress" },
-                new TaskStatus { Id = 3, name = "Blocked" },
-                new TaskStatus { Id = 4, name = "Done" },
-                new TaskStatus { Id = 5, name = "Cancel" }
+                new TaskStatus { Id = 1, Name = "Pending" },
+                new TaskStatus { Id = 2, Name = "In Progress" },
+                new TaskStatus { Id = 3, Name = "Blocked" },
+                new TaskStatus { Id = 4, Name = "Done" },
+                new TaskStatus { Id = 5, Name = "Cancel" }
             );
 
             modelBuilder.Entity<InteractionTypes>().HasData(

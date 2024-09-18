@@ -24,5 +24,12 @@ namespace Infraestructure.Querys
             return await _context.Tasks.FirstOrDefaultAsync(t => t.TaskID == taskId);
 
         }
+
+        public async Task<List<Tasks>> GetAllTaskByIdAsync(Guid ProjectID)
+        {
+            return await _context.Tasks
+            .Where(t => t.ProjectID == ProjectID)
+            .ToListAsync();
+        }
     }
 }
