@@ -167,6 +167,32 @@ namespace Aplication.Services
             int? offset, 
             int? size)
         {
+            // Validación de números negativos
+            if (offset.HasValue && offset.Value < 0)
+            {
+                throw new InvalidOffsetException("El valor de offset no puede ser negativo.");
+            }
+
+            if (size.HasValue && size.Value <= 0)
+            {
+                throw new InvalidSizeException("El valor de size debe ser mayor que cero.");
+            }
+            // Construir la consulta según los parámetros ingresados
+            string filterMessage = "Filtrando por: ";
+            if (!string.IsNullOrEmpty(Name))
+            {
+                filterMessage += $"Nombre = {Name}, ";
+            }
+            if (campaign.HasValue)
+            {
+                filterMessage += $"Campaña = {campaign.Value}, ";
+            }
+            if (client.HasValue)
+            {
+                filterMessage += $"Cliente = {client.Value}, ";
+            }
+            filterMessage += $"Offset = {offset.Value}, Size = {size.Value}";
+
             return await _query.GetProjectsAsync(Name, campaign, client, offset.Value, size.Value);
         }
 
