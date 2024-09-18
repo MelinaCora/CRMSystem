@@ -89,14 +89,10 @@ namespace CRMSystem.Controllers
         [HttpPatch("{id}/interactions")]
         public async Task<IActionResult> AddInteraction(Guid id, [FromBody] CreateInteractionRequest request)
         {
-            if (id != request.ProjectId)
-            {
-                return BadRequest("Project ID mismatch.");
-            }
-
+            
             try
             {
-                var result = await _service.AddInteractionAsync(request);
+                var result = await _service.AddInteractionAsync(id,request);
 
                 if (result)
                 {

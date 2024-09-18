@@ -174,7 +174,7 @@ namespace Aplication.Services
 
         public async Task<bool> AddInteractionAsync(Guid projectId,CreateInteractionRequest request)
         {
-            var project = await _query.GetProjectByIdAsync(request.ProjectId);
+            var project = await _query.GetProjectByIdAsync(projectId);
 
             if (project == null)
             {
@@ -183,10 +183,11 @@ namespace Aplication.Services
 
             var newinteraction = new Interactions
             {
+                ProjectID = projectId,
                 InteractionID = Guid.NewGuid(),
-                InteractionType= request.InteractionType,
-                Date= request.InteractionDate,
-                Notes=request.Description
+                InteractionType = request.InteractionType,
+                Date = request.InteractionDate,
+                Notes = request.Description
             };
 
             await _command.InsertInteraction(newinteraction);
