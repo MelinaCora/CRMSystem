@@ -54,7 +54,7 @@ namespace CRMSystem.Controllers
         }
 
         
-        [HttpGet]
+        [HttpGet ("GetByFilters")]
         public async Task<IActionResult> GetProjects(
             string? Name,
             int? campaign,
@@ -64,7 +64,7 @@ namespace CRMSystem.Controllers
         {
             var result = await _service.GetProjectsAsync(Name, campaign, client, offset, limit);
 
-            if (result.Items.Count == 0)
+            if (result.Count == 0)
             {
                 return NotFound("No projects found.");
             }

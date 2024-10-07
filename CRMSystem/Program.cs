@@ -42,7 +42,20 @@ builder.Services.AddScoped<IProjectQuery, ProjectQuery>();
 builder.Services.AddScoped<ITaskCommand, TaskCommand>();
 builder.Services.AddScoped<ITaskQuery, TaskQuery>();
 
+//CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("NuevaPolitica", app =>
+    {
+        app.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
 
+    });
+});
+
+// Agregar servicios de controladores
+builder.Services.AddControllers();
 
 
 var app = builder.Build();
@@ -53,6 +66,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("NuevaPolitica");
 
 app.UseHttpsRedirection();
 

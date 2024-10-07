@@ -1,5 +1,6 @@
 ﻿using Aplication.Interfaces;
 using Aplication.Pagination;
+using Aplication.Responses;
 using CRMSystem.Data;
 using CRMSystem.Models;
 using Microsoft.EntityFrameworkCore;
@@ -21,15 +22,19 @@ namespace Infraestructure.Querys
             _context = context;
         }
 
-       
+
         public async Task<Projects> GetProjectByIDAsync(Guid projectId)
         {
-           return await _context.Projects
-                .Include(p=> p.Clients)
-                .Include(p => p.CampaignTypes)
-                .Include(p=> p.Interaction)
-                .Include(p => p.TaskStatus)
-                .FirstOrDefaultAsync(p => p.ProjectID ==projectId);            
+            return await _context.Projects
+                 .Include(p => p.Clients)
+                 .Include(p => p.CampaignTypes)
+                 .Include(p => p.Interaction)
+                     .ThenInclude(i => i.Interactionstype)
+                 .Include(p => p.TaskStatus)
+                     .ThenInclude(t => t.Status)
+                 .Include(p => p.TaskStatus)
+                     .ThenInclude(t => t.AssignedUser)
+                 .FirstOrDefaultAsync(p => p.ProjectID == projectId);
         }
 
         public async Task<Projects> GetProjectByNameAsync(string projectName)
@@ -38,11 +43,19 @@ namespace Infraestructure.Querys
                 .FirstOrDefaultAsync(p => p.ProjectName == projectName);
         }
 
-        public async Task<PagedResult<Projects>> GetProjectsAsync(string? projectName, int? campaignTypeId, int? clientId, int? offset, int? limit)
+        public async Task<IEnumerable <Projects>> GetProjectsAsync(string? projectName, int? campaignTypeId, int? clientId, int? offset, int? limit)
         {
-            var query = _context.Projects.AsQueryable();
 
-            
+            var query = _context.Projects
+                .Include(p => p.Clients)
+                .Include(p => p.CampaignTypes)
+                .Include(p => p.Interaction)
+                    .ThenInclude(i => i.Interactionstype)
+                .Include(p => p.TaskStatus)
+                    .ThenInclude(t => t.Status)
+                .Include(p => p.TaskStatus)
+                .AsQueryable();
+
             if (!string.IsNullOrEmpty(projectName))
             {
                 query = query.Where(p => p.ProjectName.Contains(projectName));
@@ -50,29 +63,24 @@ namespace Infraestructure.Querys
             if (campaignTypeId.HasValue)
             {
                 query = query.Where(p => p.CampaignType == campaignTypeId.Value);
+                
             }
             if (clientId.HasValue)
             {
                 query = query.Where(p => p.ClientID == clientId.Value);
             }
-
-            int totalItems = await query.CountAsync();
-
-            //LIMIT es en mysql
-            List<Projects> projects = await query
-                .Skip(offset.Value) // Salta el número de filas definidas por offset
-                .Take(limit.Value)  // Toma el número de filas definidas por limit
-                .ToListAsync();
-
-            var pagedResult = new PagedResult<Projects>
+            // Aplicar paginación
+            if (offset.HasValue)
             {
-                Items = projects,
-                TotalItems = totalItems,
-                PageNumber = (offset ?? 0) / (limit ?? 10) + 1,
-                PageSize = limit.Value
-            };
+                query = query.Skip(offset.Value);
+            }
 
-            return pagedResult;
+            if (limit.HasValue)
+            {
+                query = query.Take(limit.Value);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<Projects> GetProjectByIdAsync(Guid projectId)

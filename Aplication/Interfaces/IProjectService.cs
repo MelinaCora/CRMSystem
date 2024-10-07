@@ -14,7 +14,7 @@ namespace Aplication.Interfaces
     public interface IProjectService
     {
         Task<CreateProjectResponse> CreateProject(ProjectRequest project);
-        Task<PagedResult<Projects>> GetProjectsAsync(string Name,
+        Task<List<CreateProjectResponse>> GetProjectsAsync(string? Name,
             int? campaign,
             int? client,
             int? offset,
