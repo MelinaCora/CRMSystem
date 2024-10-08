@@ -1,4 +1,6 @@
-﻿using Aplication.Interfaces;
+﻿using Aplication.Exceptions;
+using Aplication.Interfaces;
+using Aplication.Request;
 using CRMSystem.Data;
 using CRMSystem.Models;
 using Microsoft.EntityFrameworkCore;
@@ -23,5 +25,7 @@ namespace Infraestructure.Commands
             _context.Tasks.Update(task);
             await _context.SaveChangesAsync();
         }
+
+
     }
 }

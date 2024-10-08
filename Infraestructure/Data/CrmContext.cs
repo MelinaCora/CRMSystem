@@ -134,7 +134,7 @@ namespace CRMSystem.Data
 
             modelBuilder.Entity<Tasks>()
                 .HasOne(t => t.Status)
-                .WithMany()
+                .WithMany(ts => ts.Tasks)
                 .HasForeignKey(t => t.StatusId);
 
             modelBuilder.Entity<Tasks>()

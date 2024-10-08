@@ -298,16 +298,17 @@ namespace Aplication.Services
             {
                 TaskId = task.TaskID,
                 TaskName = task.Name,
-                Users = new CreateUsersResponse
+                Users = task.AssignedUser != null ? new CreateUsersResponse
                 {
                     UserID= task.AssignedTo,
                     Name= task.AssignedUser.Name,
-                },
-                TaskStatus = new CreateTaskStatusResponse
+                    Email=task.AssignedUser.Email
+                } : null,
+                TaskStatus = task.Status != null ? new CreateTaskStatusResponse
                 {
                     Id = task.Status.Id,
                     Name = task.Status.Name,
-                },
+                } : null,
             };
 
             return taskResponse;

@@ -136,8 +136,8 @@ namespace CRMSystem.Controllers
             }
         }
 
-        [HttpPut("tasks/{Taskid}")]
-        public async Task<IActionResult> UpdateTask(Guid id, [FromBody] TaskRequest request)
+        [HttpPut("tasks/{taskId}")]
+        public async Task<IActionResult> UpdateTask(Guid taskId, [FromBody] TaskRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -146,7 +146,7 @@ namespace CRMSystem.Controllers
 
             try
             {
-                var updatedTask = await _service.UpdateTaskAsync(id, request);
+                var updatedTask = await _service.UpdateTaskAsync(taskId, request);
                 return Ok(updatedTask);
 
             }

@@ -21,15 +21,20 @@ namespace Infraestructure.Querys
 
         public async Task<Tasks> GetTaskByIdAsync(Guid taskId)
         {
-            return await _context.Tasks.FirstOrDefaultAsync(t => t.TaskID == taskId);
+            return await _context.Tasks                                
+                                 .Include(t => t.AssignedUser)
+                                 .Include(t => t.Status)                 
+                                 .FirstOrDefaultAsync(t => t.TaskID == taskId);
 
         }
 
         public async Task<List<Tasks>> GetAllTaskByIdAsync(Guid ProjectID)
         {
-            return await _context.Tasks
-            .Where(t => t.ProjectID == ProjectID)
-            .ToListAsync();
+            return await _context.Tasks               
+                .Include(t => t.AssignedUser)
+                .Include(t => t.Status)
+                .Where(t => t.ProjectID == ProjectID)
+                .ToListAsync();
         }
     }
 }

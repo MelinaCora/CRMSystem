@@ -1,4 +1,5 @@
-﻿using CRMSystem.Models;
+﻿using Aplication.Request;
+using CRMSystem.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Aplication.Interfaces
     public interface ITaskCommand
     {
         Task UpdateTaskAsync(Tasks task);
+    
     }
 }
