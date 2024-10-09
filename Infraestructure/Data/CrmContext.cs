@@ -198,6 +198,14 @@ namespace CRMSystem.Data
                 new CampaignTypes { Id = 4, Name = "Email Marketing" }
             );
 
+            modelBuilder.Entity<Clients>().HasData(
+                new Clients { ClientID = 1, Name = "Melina Cora", Email = "melinaccora97@gmail.com", Phone = "1153311347", Company = "Tech Solutions", Address = "calle 54 4713, Buenos Aires, Argentina", CreateDate = DateTime.Parse("2024-01-15T10:30:00") },
+                new Clients { ClientID = 2, Name = "MArtin Cora", Email = "martin.cora.72@gmail.com", Phone = "1123545655", Company = "Empresa Global S.A.", Address = "Av. Corrientes 1234, Buenos Aires, Argentina", CreateDate = DateTime.Parse("2024-02-20T11:45:00") },
+                new Clients { ClientID = 3, Name = "Cristian Valenzuela", Email = "cvalenzuela@gmail.com", Phone = "1167812345", Company = "Ingeniería y Construcciones", Address = "Bv. Mitre 150, Rosario, Argentina", CreateDate = DateTime.Parse("2024-03-10T09:20:00") },
+                new Clients { ClientID = 4, Name = "Tahiel Valenzuela", Email = "tahielbenjaminvalenzuela@gmail.com", Phone = "1123235454", Company = "Consultoría Integral", Address = "San Martín 987, Mendoza, Argentina", CreateDate = DateTime.Parse("2024-04-05T14:50:00") },
+                new Clients { ClientID = 5, Name = "Lorena Franco", Email = "lofranco73@gmail.com", Phone = "1154843550", Company = "Sofland Argentina", Address = "Calle Independencia 345, La Plata, Argentina", CreateDate = DateTime.Parse("2024-05-25T16:10:00") }
+                );
+
             base.OnModelCreating(modelBuilder);
 
         }

@@ -69,7 +69,7 @@ namespace Aplication.Services
             if (client == null)
             {
                 throw new ObjectNotFoundException("Client not found.");
-            }                      
+            }
             Projects project = new Projects
             {
                 ProjectName = request.Name,
@@ -77,11 +77,13 @@ namespace Aplication.Services
                 EndDate = request.End,
                 CampaignType = campaignType.Id,
                 Clients = client,
-            };      
+            };
 
             await _command.InsertProject(project);
+            var projectId = project.ProjectID;
             return new CreateProjectResponse
             {
+                ProjectID= projectId,
                 ProjectName = project.ProjectName,
                 StartDate = project.StartDate,
                 EndDate = project.EndDate,
