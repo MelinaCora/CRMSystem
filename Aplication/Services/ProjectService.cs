@@ -36,35 +36,35 @@ namespace Aplication.Services
         public async Task<CreateProjectResponse> CreateProject(ProjectRequest request)
         {
 
-            if (string.IsNullOrEmpty(request.Name))
+            if (string.IsNullOrEmpty(request.name))
             {
                 throw new RequiredParameterException("Error. Name is required");
             }
 
-            if (request.CampaignID == null)
+            if (request.campaignType == null)
             {
                 throw new RequiredParameterException("Error. CampaignID is required");
             }
 
-            if (request.ClientID == null)
+            if (request.client == null)
             {
                 throw new RequiredParameterException("Error. ClientID is required");
             }
 
-            var existingProject = await _query.GetProjectByNameAsync(request.Name);
+            var existingProject = await _query.GetProjectByNameAsync(request.name);
             
             if (existingProject != null)
             {
                 throw new ProjectNameAlredyExistException("A project with this name already exists.");
             }
 
-            var campaignType = await _campaignTypeQuery.GetCampaignTypeByIdAsync(request.CampaignID);
+            var campaignType = await _campaignTypeQuery.GetCampaignTypeByIdAsync(request.campaignType);
 
             if (campaignType == null)
             {
                 throw new ObjectNotFoundException("CampaignType not found.");
             }
-            var client = await _clientQuery.GetClientByIdAsync(request.ClientID);
+            var client = await _clientQuery.GetClientByIdAsync(request.client);
 
             if (client == null)
             {
@@ -72,9 +72,9 @@ namespace Aplication.Services
             }
             Projects project = new Projects
             {
-                ProjectName = request.Name,
-                StartDate = request.Start,
-                EndDate = request.End,
+                ProjectName = request.name,
+                StartDate = request.start,
+                EndDate = request.end,
                 CampaignType = campaignType.Id,
                 Clients = client,
             };
@@ -83,24 +83,23 @@ namespace Aplication.Services
             var projectId = project.ProjectID;
             return new CreateProjectResponse
             {
-                ProjectID= projectId,
-                ProjectName = project.ProjectName,
-                StartDate = project.StartDate,
-                EndDate = project.EndDate,
-                CampaignTypes = new CreateCampaignTypesResponse
+                id= projectId,
+                name = project.ProjectName,
+                start= project.StartDate,
+                end = project.EndDate,
+                campaignType = new CreateCampaignTypesResponse
                 {
-                    Id = project.CampaignType,
-                    Name = project.CampaignTypes.Name
+                    id = project.CampaignType,
+                    name = project.CampaignTypes.Name
                 },
-                Clients = new CreateClientResponse
+                client = new CreateClientResponse
                 {
-                    ClientID = client.ClientID,
-                    Name = client.Name,
-                    Email = client.Email,
-                    Phone = client.Phone,
-                    Company = client.Company,
-                    Address = client.Address,
-                    CreateDate = DateTime.Now,
+                    id = client.ClientID,
+                    name = client.Name,
+                    email = client.Email,
+                    phone = client.Phone,
+                    company = client.Company,
+                    address = client.Address                    
                 },
             }; 
         }
@@ -118,36 +117,35 @@ namespace Aplication.Services
             {
                 Data = new CreateProjectResponse
                 {
-                    ProjectID = project.ProjectID,
-                    ProjectName = project.ProjectName,
-                    StartDate = project.StartDate,
-                    EndDate = project.EndDate,
-                    CampaignTypes = new CreateCampaignTypesResponse
+                    id = project.ProjectID,
+                    name = project.ProjectName,
+                    start= project.StartDate,
+                    end = project.EndDate,
+                    campaignType = new CreateCampaignTypesResponse
                     {
-                        Id = project.CampaignType,
-                        Name = project.CampaignTypes.Name
+                        id = project.CampaignType,
+                        name = project.CampaignTypes.Name
 
                     },
-                    Clients = new CreateClientResponse
+                    client = new CreateClientResponse
                     {
-                        ClientID = project.Clients.ClientID,
-                        Name = project.Clients.Name,
-                        Email = project.Clients.Email,
-                        Phone = project.Clients.Phone,
-                        Company = project.Clients.Company,
-                        Address = project.Clients.Address,
-                        CreateDate = project.Clients.CreateDate
+                        id = project.Clients.ClientID,
+                        name = project.Clients.Name,
+                        email = project.Clients.Email,
+                        phone = project.Clients.Phone,
+                        company = project.Clients.Company,
+                        address = project.Clients.Address                       
                     }
                 },
                 Interactions = project.Interaction != null && project.Interaction.Any()
                        ? project.Interaction.Select(i => new InteractionResponse
                        {
-                           InteractionId = i.InteractionID,
-                           Notes = i.Notes,
-                           InteractionType= new CreateInteractionTypeResponse
+                           id = i.InteractionID,
+                           notes = i.Notes,
+                           interactionType= new CreateInteractionTypeResponse
                            {
-                               Id = i.InteractionType,
-                               Name=i.Interactionstype.Name,
+                               id = i.InteractionType,
+                               name=i.Interactionstype.Name,
 
                            }
                        }).ToList()
@@ -207,23 +205,23 @@ namespace Aplication.Services
             {
                 var responseProject = new CreateProjectResponse
                 {
-                    ProjectID = project.ProjectID,
-                    ProjectName = project.ProjectName,
-                    StartDate = project.StartDate,
-                    EndDate = project.EndDate,                    
-                    Clients = project.Clients != null ? new CreateClientResponse
+                    id = project.ProjectID,
+                    name = project.ProjectName,
+                    start= project.StartDate,
+                    end = project.EndDate,                    
+                    client = project.Clients != null ? new CreateClientResponse
                     {
-                        ClientID = project.Clients.ClientID,
-                        Name = project.Clients.Name,
-                        Email = project.Clients.Email,
-                        Company = project.Clients.Company,
-                        Phone = project.Clients.Phone,
-                        Address = project.Clients.Address,
+                        id = project.Clients.ClientID,
+                        name = project.Clients.Name,
+                        email = project.Clients.Email,
+                        company = project.Clients.Company,
+                        phone = project.Clients.Phone,
+                        address = project.Clients.Address,
                     }: null,
-                    CampaignTypes = project.CampaignTypes != null? new CreateCampaignTypesResponse
+                    campaignType = project.CampaignTypes != null? new CreateCampaignTypesResponse
                     {
-                        Id = project.CampaignTypes.Id,
-                        Name = project.CampaignTypes.Name
+                        id = project.CampaignTypes.Id,
+                        name = project.CampaignTypes.Name
                     }: null,                 
                 };
                 responseProjects.Add(responseProject);

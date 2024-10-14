@@ -8,16 +8,16 @@ namespace Aplication.Responses
 {
     public class InteractionResponse
     {
-        public Guid InteractionId { get; set; }
-        public CreateInteractionTypeResponse InteractionType { get; set; }
-        public string Notes { get; set; }
+        public Guid id { get; set; }
+        public CreateInteractionTypeResponse interactionType { get; set; }
+        public string notes { get; set; }
         
     }
 
     public class CreateInteractionTypeResponse
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
     }
 
 }

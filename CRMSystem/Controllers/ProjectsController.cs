@@ -13,48 +13,18 @@ namespace CRMSystem.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class ProjectsController : ControllerBase
+    public class ProjectController : ControllerBase
     {
         private readonly IProjectService _service;
 
 
-        public ProjectsController(IProjectService service)
+        public ProjectController(IProjectService service)
         {
             _service = service;
         }
-
-
-        [HttpPost]
-        public async Task<IActionResult> CreateProject(ProjectRequest request)
-        {
-            try
-            {
-                var result = await _service.CreateProject(request);
-                return new JsonResult(result) { StatusCode = 201 };
-            }
-            catch (ProjectNameAlredyExistException ex)
-            {
-                
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (ObjectNotFoundException ex)
-            {
-                
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (RequiredParameterException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                // Para cualquier otro error no manejado, retornar un error 500
-                return StatusCode(500, new { message = "Ocurrió un error inesperado.", details = ex.Message });
-            }
-        }
-
+          
         
-        [HttpGet ("GetByFilters")]
+        [HttpGet]
         public async Task<IActionResult> GetProjects(
             string? Name,
             int? campaign,
@@ -71,7 +41,36 @@ namespace CRMSystem.Controllers
 
             return Ok(result);
         }
-        //get project by ID
+
+        [HttpPost]
+        public async Task<IActionResult> CreateProject(ProjectRequest request)
+        {
+            try
+            {
+                var result = await _service.CreateProject(request);
+                return new JsonResult(result) { StatusCode = 201 };
+            }
+            catch (ProjectNameAlredyExistException ex)
+            {
+
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (ObjectNotFoundException ex)
+            {
+
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (RequiredParameterException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Ocurrió un error inesperado.", details = ex.Message });
+            }
+        }
+
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProjectById(Guid id)
         {
@@ -85,7 +84,7 @@ namespace CRMSystem.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-        //Add interaction
+        
         [HttpPatch("{id}/interactions")]
         public async Task<IActionResult> AddInteraction(Guid id, [FromBody] CreateInteractionRequest request)
         {
@@ -108,7 +107,7 @@ namespace CRMSystem.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-        //AddTask
+       
         [HttpPatch("{id}/tasks")]
         public async Task<IActionResult> AddTaskToProject(Guid id, [FromBody] TaskRequest request)
         {
@@ -136,7 +135,7 @@ namespace CRMSystem.Controllers
             }
         }
 
-        [HttpPut("tasks/{taskId}")]
+        [HttpPut("Tasks/{taskId}")]
         public async Task<IActionResult> UpdateTask(Guid taskId, [FromBody] TaskRequest request)
         {
             if (!ModelState.IsValid)

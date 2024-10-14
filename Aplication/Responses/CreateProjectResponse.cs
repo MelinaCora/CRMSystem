@@ -8,19 +8,19 @@ namespace Aplication.Responses
 {
     public  class CreateProjectResponse
     {
-        public Guid ProjectID { get; set; }
-        public string ProjectName { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public CreateCampaignTypesResponse CampaignTypes { get; set; } 
-        public CreateClientResponse Clients { get; set; }
+        public Guid id { get; set; }
+        public string name { get; set; }
+        public DateTime start { get; set; }
+        public DateTime end { get; set; }
+        public CreateCampaignTypesResponse campaignType { get; set; } 
+        public CreateClientResponse client { get; set; }
    
     }
 
     public class CreateCampaignTypesResponse
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
     }
       
     

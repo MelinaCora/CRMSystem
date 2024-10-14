@@ -9,12 +9,12 @@ namespace CRMSystem.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class ClientsController : ControllerBase
+    public class ClientController : ControllerBase
     {
         
         private readonly IClientServices _clientService;
 
-        public ClientsController(IClientServices clientService)
+        public ClientController(IClientServices clientService)
         {
             _clientService = clientService;
         }
