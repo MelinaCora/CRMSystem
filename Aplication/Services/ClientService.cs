@@ -60,6 +60,7 @@ namespace Aplication.Services
                 Address = request.Address,
                 CreateDate = DateTime.Now
             };
+
             await _commands.InsertClient(clientEntity);
 
             var clientResponse = new CreateClientResponse
@@ -76,12 +77,19 @@ namespace Aplication.Services
            
         }
 
-        public async Task<List<Clients>> GetAll()
+        public async Task<List<CreateClientResponse>> GetAll()
         {
-
-            List<Clients> clients = new List<Clients>();
-            clients = await _query.GetListClientsAsync();
-            return clients;
+            var clients = await _query.GetListClientsAsync();
+            return clients.Select(client => new CreateClientResponse
+            {
+                id = client.ClientID,
+                name = client.Name,
+                email = client.Email,
+                phone = client.Phone,
+                company = client.Company,
+                address = client.Address
+              
+            }).ToList();
         }
 
     }

@@ -13,7 +13,7 @@ namespace Aplication.Interfaces
     {
        Task <CreateClientResponse> CreateClient(ClientRequest request);
 
-       Task <List<Clients>> GetAll();
+       Task <List<CreateClientResponse>> GetAll();
 
 
     }

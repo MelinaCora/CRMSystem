@@ -303,18 +303,21 @@ namespace Aplication.Services
 
             await _command.UpdateProject(project);
 
-            return new InteractionResponse
+            var interactionResponse = new InteractionResponse
             {
                 id = newInteraction.InteractionID,
                 notes = newInteraction.Notes,
                 date = newInteraction.Date,
                 projectId = newInteraction.ProjectID,
-                interactionType = newInteraction.Interactionstype != null ? new CreateInteractionTypeResponse
+                interactionType = newInteraction.Interactionstype != null
+                ? new CreateInteractionTypeResponse
                 {
                     id = newInteraction.InteractionType,
-                    name = newInteraction.Interactionstype.Name,
-                }:null,
-            };           
+                    name = newInteraction.Interactionstype.Name
+                }
+                : null
+            };
+            return interactionResponse;
         }
 
         public async Task<TaskResponse> AddTaskToProject(Guid projectId, TaskRequest request)
