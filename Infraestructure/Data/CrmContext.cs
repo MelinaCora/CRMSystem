@@ -28,6 +28,7 @@ namespace CRMSystem.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CampaignTypes>()
+                .ToTable("CampaignTypes")
                 .HasKey(ct => ct.Id);
 
             modelBuilder.Entity<CampaignTypes>()
@@ -35,6 +36,7 @@ namespace CRMSystem.Data
                 .HasMaxLength(25);
 
             modelBuilder.Entity<Clients>()
+                .ToTable("Clients")
                 .HasKey(cl => cl.ClientID);
 
             modelBuilder.Entity<Clients>()
@@ -62,11 +64,11 @@ namespace CRMSystem.Data
                .HasMaxLength(int.MaxValue);
 
             modelBuilder.Entity<Clients>()
-                .Property(cl => cl.CreateDate)
-                .IsRequired(false)
-                .HasColumnType("datetime");
+                .Property(cl => cl.CreateDate);
+                
 
             modelBuilder.Entity<InteractionTypes>()
+                .ToTable("InteractionTypes")
                 .HasKey(it => it.Id);
 
             modelBuilder.Entity<InteractionTypes>()
@@ -74,6 +76,7 @@ namespace CRMSystem.Data
                 .HasMaxLength(25);
 
             modelBuilder.Entity<Users>()
+                .ToTable("Users")
                 .HasKey(u => u.UserID);
 
             modelBuilder.Entity<Users>()
@@ -85,6 +88,7 @@ namespace CRMSystem.Data
                .HasMaxLength(255);
 
             modelBuilder.Entity<TaskStatus>()
+                .ToTable("TaskStatus")
                 .HasKey(ts => ts.Id);
 
             modelBuilder.Entity<TaskStatus>()
@@ -92,6 +96,7 @@ namespace CRMSystem.Data
                 .HasMaxLength(25);
 
             modelBuilder.Entity<Projects>()
+                .ToTable("Projects")
                 .HasKey(p => p.ProjectID);
 
             modelBuilder.Entity<Projects>()
@@ -117,6 +122,7 @@ namespace CRMSystem.Data
                 .IsUnique();
 
             modelBuilder.Entity<Tasks>()
+                .ToTable("Tasks")
                 .HasKey(t => t.TaskID);
 
             modelBuilder.Entity<Tasks>()
@@ -133,9 +139,13 @@ namespace CRMSystem.Data
                 .HasForeignKey(t => t.AssignedTo);
 
             modelBuilder.Entity<Tasks>()
-                .HasOne(t => t.Status)
-                .WithMany(ts => ts.Tasks)
-                .HasForeignKey(t => t.StatusId);
+                .Property(t => t.Status)
+                .HasColumnName("Status");
+
+            modelBuilder.Entity<Tasks>()
+                .HasOne(t => t.TaskStatus)
+                .WithMany()
+                .HasForeignKey(t => t.Status);
 
             modelBuilder.Entity<Tasks>()
                 .HasOne(t => t.Project)
@@ -143,11 +153,13 @@ namespace CRMSystem.Data
                 .HasForeignKey(t => t.ProjectID);
 
             modelBuilder.Entity<Tasks>()
-              .Property(t => t.CreateDate)
-              .IsRequired(false)
-              .HasColumnType("datetime");
+              .Property(t => t.CreateDate);
+
+            modelBuilder.Entity<Tasks>()
+                .Property(t => t.UpdateDate);
 
             modelBuilder.Entity<Interactions>()
+                .ToTable("Interactions")
                 .HasKey(i => i.InteractionID);
 
             modelBuilder.Entity<Interactions>()
@@ -200,7 +212,7 @@ namespace CRMSystem.Data
 
             modelBuilder.Entity<Clients>().HasData(
                 new Clients { ClientID = 1, Name = "Melina Cora", Email = "melinaccora97@gmail.com", Phone = "1153311347", Company = "Tech Solutions", Address = "calle 54 4713, Buenos Aires, Argentina", CreateDate = DateTime.Parse("2024-01-15T10:30:00") },
-                new Clients { ClientID = 2, Name = "MArtin Cora", Email = "martin.cora.72@gmail.com", Phone = "1123545655", Company = "Empresa Global S.A.", Address = "Av. Corrientes 1234, Buenos Aires, Argentina", CreateDate = DateTime.Parse("2024-02-20T11:45:00") },
+                new Clients { ClientID = 2, Name = "Martin Cora", Email = "martin.cora.72@gmail.com", Phone = "1123545655", Company = "Empresa Global S.A.", Address = "Av. Corrientes 1234, Buenos Aires, Argentina", CreateDate = DateTime.Parse("2024-02-20T11:45:00") },
                 new Clients { ClientID = 3, Name = "Cristian Valenzuela", Email = "cvalenzuela@gmail.com", Phone = "1167812345", Company = "Ingeniería y Construcciones", Address = "Bv. Mitre 150, Rosario, Argentina", CreateDate = DateTime.Parse("2024-03-10T09:20:00") },
                 new Clients { ClientID = 4, Name = "Tahiel Valenzuela", Email = "tahielbenjaminvalenzuela@gmail.com", Phone = "1123235454", Company = "Consultoría Integral", Address = "San Martín 987, Mendoza, Argentina", CreateDate = DateTime.Parse("2024-04-05T14:50:00") },
                 new Clients { ClientID = 5, Name = "Lorena Franco", Email = "lofranco73@gmail.com", Phone = "1154843550", Company = "Sofland Argentina", Address = "Calle Independencia 345, La Plata, Argentina", CreateDate = DateTime.Parse("2024-05-25T16:10:00") }

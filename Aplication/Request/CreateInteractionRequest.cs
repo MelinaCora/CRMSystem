@@ -8,8 +8,8 @@ namespace Aplication.Request
 {
     public class CreateInteractionRequest
     {
+        public string notes { get; set; }       
+        public DateTime date { get; set; }
         public int InteractionType { get; set; }
-        public DateTime InteractionDate { get; set; }
-        public string Description { get; set; }
     }
 }

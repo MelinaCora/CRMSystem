@@ -33,7 +33,7 @@ namespace Aplication.Services
             _campaignTypeQuery = campaignTypeQuery;
             _clientQuery = clientQuery;
         }
-        public async Task<CreateProjectResponse> CreateProject(ProjectRequest request)
+        public async Task<ProjectDetailsResponse> CreateProject(ProjectRequest request)
         {
 
             if (string.IsNullOrEmpty(request.name))
@@ -49,6 +49,16 @@ namespace Aplication.Services
             if (request.client == null)
             {
                 throw new RequiredParameterException("Error. ClientID is required");
+            }
+
+            if (request.start == default(DateTime))
+            {
+                throw new RequiredParameterException("Error. Start date is required");
+            }
+
+            if (request.start < DateTime.Now)
+            {
+                throw new RequiredParameterException("Error. Start date cannot be in the past");
             }
 
             var existingProject = await _query.GetProjectByNameAsync(request.name);
@@ -77,31 +87,68 @@ namespace Aplication.Services
                 EndDate = request.end,
                 CampaignType = campaignType.Id,
                 Clients = client,
+                CreateDate=DateTime.Now,
             };
 
             await _command.InsertProject(project);
             var projectId = project.ProjectID;
-            return new CreateProjectResponse
+            return new ProjectDetailsResponse
             {
-                id= projectId,
-                name = project.ProjectName,
-                start= project.StartDate,
-                end = project.EndDate,
-                campaignType = new CreateCampaignTypesResponse
+                Data = new CreateProjectResponse
                 {
-                    id = project.CampaignType,
-                    name = project.CampaignTypes.Name
+                    id = project.ProjectID,
+                    name = project.ProjectName,
+                    start = project.StartDate,
+                    end = project.EndDate,
+                    campaignType = new CreateCampaignTypesResponse
+                    {
+                        id = project.CampaignType,
+                        name = project.CampaignTypes.Name
+
+                    },
+                    client = new CreateClientResponse
+                    {
+                        id = project.Clients.ClientID,
+                        name = project.Clients.Name,
+                        email = project.Clients.Email,
+                        phone = project.Clients.Phone,
+                        company = project.Clients.Company,
+                        address = project.Clients.Address
+                    }
                 },
-                client = new CreateClientResponse
+                Interactions = project.Interaction != null && project.Interaction.Any()
+                       ? project.Interaction.Select(i => new InteractionResponse
+                       {
+                           id = i.InteractionID,
+                           notes = i.Notes,
+                           interactionType = new CreateInteractionTypeResponse
+                           {
+                               id = i.InteractionType,
+                               name = i.Interactionstype.Name,
+
+                           }
+                       }).ToList()
+                       : new List<InteractionResponse>(),
+                Tasks = project.TaskStatus != null && project.TaskStatus.Any()
+                ? project.TaskStatus.Select(t => new TaskResponse
                 {
-                    id = client.ClientID,
-                    name = client.Name,
-                    email = client.Email,
-                    phone = client.Phone,
-                    company = client.Company,
-                    address = client.Address                    
-                },
-            }; 
+                    id = t.TaskID,
+                    name = t.Name,
+                    userAssigned = new CreateUsersResponse
+                    {
+                        id = t.AssignedTo,
+                        name = t.AssignedUser.Name,
+                        email = t.AssignedUser.Email,
+                    },
+                    status = new CreateTaskStatusResponse
+                    {
+                        id = t.Status,
+                        name = t.TaskStatus.Name,
+                    }
+                }).ToList()
+                : new List<TaskResponse>()
+
+            };
         }
 
         public async Task<ProjectDetailsResponse> GetProjectByIdAsync(Guid projectId)
@@ -142,6 +189,8 @@ namespace Aplication.Services
                        {
                            id = i.InteractionID,
                            notes = i.Notes,
+                           projectId= i.ProjectID,
+                           date=i.Date,
                            interactionType= new CreateInteractionTypeResponse
                            {
                                id = i.InteractionType,
@@ -153,18 +202,20 @@ namespace Aplication.Services
                 Tasks = project.TaskStatus != null && project.TaskStatus.Any()
                 ? project.TaskStatus.Select(t => new TaskResponse
                 {
-                    TaskId = t.TaskID,
-                    TaskName = t.Name,
-                    Users = new CreateUsersResponse
+                    id = t.TaskID,
+                    name = t.Name,
+                    projectId=t.ProjectID,
+                    dueDate = t.DueDate,
+                    userAssigned = new CreateUsersResponse
                     {
-                        UserID = t.AssignedTo,
-                        Name= t.AssignedUser.Name,
-                        Email=t.AssignedUser.Email,                 
+                        id = t.AssignedTo,
+                        name= t.AssignedUser.Name,                       
+                        email =t.AssignedUser.Email,                 
                     },
-                    TaskStatus = new CreateTaskStatusResponse
+                    status = new CreateTaskStatusResponse
                     {
-                        Id= t.StatusId,
-                        Name=t.Status.Name,
+                        id= t.Status,
+                        name=t.TaskStatus.Name,
                     }
                 }).ToList()
                 : new List<TaskResponse>()
@@ -178,7 +229,7 @@ namespace Aplication.Services
             int? offset, 
             int? limit)
         {
-            // Validación de números negativos
+            
             if (offset.HasValue && offset.Value < 0)
             {
                 throw new InvalidOffsetException("El valor de offset no puede ser negativo.");
@@ -190,11 +241,11 @@ namespace Aplication.Services
             }
             if (!offset.HasValue)
             {
-                offset = 0; // por defecto 0 si el campo esta vacio
+                offset = 0;
             }
             if (!limit.HasValue)
             {
-                limit = 10; // Si no se asigna un size, valor por defecto 10
+                limit = 10; 
             }
          
 
@@ -229,29 +280,44 @@ namespace Aplication.Services
             return responseProjects;
         }
 
-        public async Task<bool> AddInteractionAsync(Guid projectId,CreateInteractionRequest request)
+        public async Task<InteractionResponse> AddInteractionAsync(Guid projectId,CreateInteractionRequest request)
         {
-            var project = await _query.GetProjectByIdAsync(projectId);
+            var project = await _query.GetProjectByIDAsync(projectId);
 
             if (project == null)
             {
                 throw new ObjectNotFoundException($"No se encontró un proyecto con el ID ");
             }
 
-            var newinteraction = new Interactions
+            var newInteraction = new Interactions
             {
                 ProjectID = projectId,
                 InteractionID = Guid.NewGuid(),
                 InteractionType = request.InteractionType,
-                Date = request.InteractionDate,
-                Notes = request.Description
+                Date = request.date,
+                Notes = request.notes
             };
 
-            await _command.InsertInteraction(newinteraction);
-            return true;
+            await _command.InsertInteraction(newInteraction);
+            project.UpdateDate = DateTime.Now;
+
+            await _command.UpdateProject(project);
+
+            return new InteractionResponse
+            {
+                id = newInteraction.InteractionID,
+                notes = newInteraction.Notes,
+                date = newInteraction.Date,
+                projectId = newInteraction.ProjectID,
+                interactionType = newInteraction.Interactionstype != null ? new CreateInteractionTypeResponse
+                {
+                    id = newInteraction.InteractionType,
+                    name = newInteraction.Interactionstype.Name,
+                }:null,
+            };           
         }
 
-        public async Task<bool> AddTaskToProject(Guid projectId, TaskRequest request)
+        public async Task<TaskResponse> AddTaskToProject(Guid projectId, TaskRequest request)
         {
             var project = await _query.GetProjectByIDAsync(projectId);
 
@@ -263,15 +329,40 @@ namespace Aplication.Services
             var task = new Tasks
             {
                 TaskID = Guid.NewGuid(),
-                Name = request.TaskName,
-                DueDate = request.DueDate,
+                Name = request.name,
+                DueDate = request.dueDate,
                 ProjectID = projectId,
-                AssignedTo = request.AssignedTo,
-                StatusId = request.StatusId
+                AssignedTo = request.user,
+                Status = request.status,
+                CreateDate=DateTime.Now 
             };
 
             await _command.AddTaskToProject(task);
-            return true;
+
+            project.UpdateDate = DateTime.Now;
+
+            await _command.UpdateProject(project);
+
+            var insertedTask = await _taskQuery.GetTaskByIdAsync(task.TaskID);
+
+            return new TaskResponse
+            {
+                id = insertedTask.TaskID,
+                name = insertedTask.Name,
+                dueDate = insertedTask.DueDate,
+                projectId = insertedTask.ProjectID,
+                status = insertedTask.TaskStatus != null ? new CreateTaskStatusResponse
+                {
+                    id = insertedTask.Status,
+                    name= insertedTask.TaskStatus.Name
+                }:null,
+                userAssigned = insertedTask.AssignedUser != null ? new CreateUsersResponse
+                {
+                    id= insertedTask.AssignedTo,
+                    name= insertedTask.AssignedUser.Name,
+                    email= insertedTask.AssignedUser.Email,
+                }:null,
+            };
         }
 
         public async Task<TaskResponse> UpdateTaskAsync(Guid taskId, TaskRequest request)
@@ -285,10 +376,10 @@ namespace Aplication.Services
             }
 
             
-            task.Name = request.TaskName;
-            task.DueDate = request.DueDate;
-            task.AssignedTo = request.AssignedTo;
-            task.StatusId = request.StatusId;
+            task.Name = request.name;
+            task.DueDate = request.dueDate;
+            task.AssignedTo = request.user;
+            task.Status = request.status;
 
             
             await _taskCommand.UpdateTaskAsync(task); 
@@ -296,18 +387,18 @@ namespace Aplication.Services
             
             var taskResponse = new TaskResponse
             {
-                TaskId = task.TaskID,
-                TaskName = task.Name,
-                Users = task.AssignedUser != null ? new CreateUsersResponse
+                id = task.TaskID,
+                name = task.Name,
+                userAssigned = task.AssignedUser != null ? new CreateUsersResponse
                 {
-                    UserID= task.AssignedTo,
-                    Name= task.AssignedUser.Name,
-                    Email=task.AssignedUser.Email
+                    id= task.AssignedTo,
+                    name= task.AssignedUser.Name,
+                    email=task.AssignedUser.Email
                 } : null,
-                TaskStatus = task.Status != null ? new CreateTaskStatusResponse
+                status = task.Status != null ? new CreateTaskStatusResponse
                 {
-                    Id = task.Status.Id,
-                    Name = task.Status.Name,
+                    id = task.Status,
+                    name = task.TaskStatus.Name,
                 } : null,
             };
 

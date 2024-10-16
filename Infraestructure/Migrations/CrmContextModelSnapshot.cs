@@ -37,7 +37,7 @@ namespace Infraestructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CampaignTypes");
+                    b.ToTable("CampaignTypes", (string)null);
 
                     b.HasData(
                         new
@@ -81,7 +81,7 @@ namespace Infraestructure.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.Property<DateTime?>("CreateDate")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -100,7 +100,7 @@ namespace Infraestructure.Migrations
 
                     b.HasKey("ClientID");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Clients", (string)null);
 
                     b.HasData(
                         new
@@ -120,7 +120,7 @@ namespace Infraestructure.Migrations
                             Company = "Empresa Global S.A.",
                             CreateDate = new DateTime(2024, 2, 20, 11, 45, 0, 0, DateTimeKind.Unspecified),
                             Email = "martin.cora.72@gmail.com",
-                            Name = "MArtin Cora",
+                            Name = "Martin Cora",
                             Phone = "1123545655"
                         },
                         new
@@ -170,7 +170,7 @@ namespace Infraestructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InteractionTypes");
+                    b.ToTable("InteractionTypes", (string)null);
 
                     b.HasData(
                         new
@@ -221,7 +221,7 @@ namespace Infraestructure.Migrations
 
                     b.HasIndex("ProjectID");
 
-                    b.ToTable("Interactions");
+                    b.ToTable("Interactions", (string)null);
                 });
 
             modelBuilder.Entity("CRMSystem.Models.Projects", b =>
@@ -262,7 +262,7 @@ namespace Infraestructure.Migrations
                     b.HasIndex("ProjectName")
                         .IsUnique();
 
-                    b.ToTable("Projects");
+                    b.ToTable("Projects", (string)null);
                 });
 
             modelBuilder.Entity("CRMSystem.Models.TaskStatus", b =>
@@ -280,7 +280,7 @@ namespace Infraestructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TaskStatus");
+                    b.ToTable("TaskStatus", (string)null);
 
                     b.HasData(
                         new
@@ -319,8 +319,8 @@ namespace Infraestructure.Migrations
                     b.Property<int>("AssignedTo")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("CreateDate")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime(6)");
@@ -333,10 +333,11 @@ namespace Infraestructure.Migrations
                     b.Property<Guid>("ProjectID")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
+                        .HasColumnName("Status");
 
-                    b.Property<DateTime>("UpdateDate")
+                    b.Property<DateTime?>("UpdateDate")
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("TaskID");
@@ -345,9 +346,9 @@ namespace Infraestructure.Migrations
 
                     b.HasIndex("ProjectID");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("Status");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
                 });
 
             modelBuilder.Entity("CRMSystem.Models.Users", b =>
@@ -370,7 +371,7 @@ namespace Infraestructure.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -457,9 +458,9 @@ namespace Infraestructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CRMSystem.Models.TaskStatus", "Status")
-                        .WithMany("Tasks")
-                        .HasForeignKey("StatusId")
+                    b.HasOne("CRMSystem.Models.TaskStatus", "TaskStatus")
+                        .WithMany()
+                        .HasForeignKey("Status")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -467,7 +468,7 @@ namespace Infraestructure.Migrations
 
                     b.Navigation("Project");
 
-                    b.Navigation("Status");
+                    b.Navigation("TaskStatus");
                 });
 
             modelBuilder.Entity("CRMSystem.Models.Projects", b =>
@@ -475,11 +476,6 @@ namespace Infraestructure.Migrations
                     b.Navigation("Interaction");
 
                     b.Navigation("TaskStatus");
-                });
-
-            modelBuilder.Entity("CRMSystem.Models.TaskStatus", b =>
-                {
-                    b.Navigation("Tasks");
                 });
 #pragma warning restore 612, 618
         }

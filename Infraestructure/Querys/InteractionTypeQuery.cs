@@ -22,6 +22,7 @@ namespace Infraestructure.Querys
         public async Task<List<InteractionTypes>> GetAllInteractions()
         {
             return await _context.InteractionTypes.ToListAsync();
+                
         }
     }
 }

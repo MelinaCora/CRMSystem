@@ -6,6 +6,7 @@ using CRMSystem.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ namespace Aplication.Services
             _query = query;
         }
 
-        public async Task<Clients> CreateClient(ClientRequest request)
+        public async Task<CreateClientResponse> CreateClient(ClientRequest request)
         {
             if (string.IsNullOrEmpty(request.Name))
             {
@@ -50,27 +51,28 @@ namespace Aplication.Services
                 throw new RequiredParameterException("Error. Client Adress is required");
             }
 
-            Clients Client = new Clients()
-                {
-                    Name = request.Name,
-                    Email = request.Email,                    
-                    Phone = request.Phone,
-                    Company = request.Company,
-                    Address = request.Address,
-                };
+            var clientEntity = new Clients
+            {
+                Name = request.Name,
+                Email = request.Email,
+                Phone = request.Phone,
+                Company = request.Company,
+                Address = request.Address,
+                CreateDate = DateTime.Now
+            };
+            await _commands.InsertClient(clientEntity);
 
-                await _commands.InsertClient(Client);
-                return new Clients
-                {
+            var clientResponse = new CreateClientResponse
+            {
+                id = clientEntity.ClientID,
+                name = clientEntity.Name,
+                email = clientEntity.Email,
+                phone = clientEntity.Phone,
+                company = clientEntity.Company,
+                address = clientEntity.Address
+            };
 
-                    Name = Client.Name,
-                    Email = Client.Email,
-                    Company = Client.Company,
-                    Phone = Client.Phone,
-                    Address = Client.Address,
-
-                };
-            
+            return clientResponse;           
            
         }
 

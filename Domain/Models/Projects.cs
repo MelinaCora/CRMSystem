@@ -11,10 +11,10 @@ namespace CRMSystem.Models
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
 
-        public int CampaignType { get; set; }    // Foreign Key
+        public int CampaignType { get; set; }
         public CampaignTypes CampaignTypes { get; set; }
 
-        public int ClientID { get; set; }          // Foreign Key
+        public int ClientID { get; set; } 
 
         public Clients Clients { get; set; }    
 

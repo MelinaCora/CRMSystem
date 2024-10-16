@@ -23,7 +23,7 @@ namespace Infraestructure.Querys
         {
             return await _context.Tasks                                
                                  .Include(t => t.AssignedUser)
-                                 .Include(t => t.Status)                 
+                                 .Include(t => t.TaskStatus)                                                  
                                  .FirstOrDefaultAsync(t => t.TaskID == taskId);
 
         }
@@ -32,7 +32,7 @@ namespace Infraestructure.Querys
         {
             return await _context.Tasks               
                 .Include(t => t.AssignedUser)
-                .Include(t => t.Status)
+                .Include(t => t.TaskStatus)
                 .Where(t => t.ProjectID == ProjectID)
                 .ToListAsync();
         }

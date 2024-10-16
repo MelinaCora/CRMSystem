@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CRMSystem.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,9 +13,9 @@ namespace Aplication.Responses
         public string name { get; set; }
         public DateTime start { get; set; }
         public DateTime end { get; set; }
-        public CreateCampaignTypesResponse campaignType { get; set; } 
         public CreateClientResponse client { get; set; }
-   
+        public CreateCampaignTypesResponse campaignType { get; set; }       
+
     }
 
     public class CreateCampaignTypesResponse

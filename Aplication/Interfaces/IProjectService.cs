@@ -13,7 +13,7 @@ namespace Aplication.Interfaces
 {
     public interface IProjectService
     {
-        Task<CreateProjectResponse> CreateProject(ProjectRequest project);
+        Task<ProjectDetailsResponse> CreateProject(ProjectRequest project);
         Task<List<CreateProjectResponse>> GetProjectsAsync(string? Name,
             int? campaign,
             int? client,
@@ -21,8 +21,8 @@ namespace Aplication.Interfaces
             int? limit);
 
         Task<ProjectDetailsResponse> GetProjectByIdAsync(Guid projectId);
-        Task<bool> AddInteractionAsync(Guid projectId,CreateInteractionRequest request);
-        Task <bool> AddTaskToProject(Guid projectId, TaskRequest request);
+        Task<InteractionResponse> AddInteractionAsync(Guid projectId,CreateInteractionRequest request);
+        Task <TaskResponse> AddTaskToProject(Guid projectId, TaskRequest request);
         Task<TaskResponse> UpdateTaskAsync(Guid taskId, TaskRequest request);
     }
 }

@@ -25,17 +25,11 @@ namespace Infraestructure.Commands
         public async Task InsertProject(Projects project)
         {
             var existingProject = await _context.Projects
-                .FirstOrDefaultAsync(p => p.ProjectName == project.ProjectName);
-
-            if (existingProject != null)
-            {
-                throw new InvalidOperationException("A project with the same name already exists.");
-            }
-            else
-            {
-                _context.Add(project);
-                await _context.SaveChangesAsync();
-            }
+                .FirstOrDefaultAsync(p => p.ProjectName == project.ProjectName); 
+          
+            
+            _context.Add(project);
+            await _context.SaveChangesAsync();            
         }
         public async Task AddTaskToProject(Tasks task)
         {
@@ -47,19 +41,13 @@ namespace Infraestructure.Commands
         {
             
             var existingTask = await _context.Tasks.FindAsync(updatedTask.TaskID);
-
-            if (existingTask == null)
-            {
-                throw new KeyNotFoundException("Task not found.");
-            }
-
-            // Actualizar los campos de la tarea con los nuevos valores
+                 
             existingTask.Name = updatedTask.Name;
             existingTask.DueDate = updatedTask.DueDate;
             existingTask.AssignedTo = updatedTask.AssignedTo;
-            existingTask.StatusId = updatedTask.StatusId;
+            existingTask.Status = updatedTask.Status;
 
-            // Guardar los cambios en la base de datos
+            
             _context.Tasks.Update(existingTask);
             await _context.SaveChangesAsync();
         }
@@ -67,6 +55,12 @@ namespace Infraestructure.Commands
         public async Task InsertInteraction(Interactions interaction)
         {
            _context.Add(interaction);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateProject(Projects project)
+        {
+            _context.Update(project);
             await _context.SaveChangesAsync();
         }
     }

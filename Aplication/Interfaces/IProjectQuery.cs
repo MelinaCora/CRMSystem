@@ -21,7 +21,7 @@ namespace Aplication.Interfaces
             int? clientId, 
             int? pageNumber, 
             int? pageSize);
-        Task<Projects> GetProjectByIdAsync(Guid projectId);
+        
     }
 
 }

@@ -31,7 +31,7 @@ namespace Infraestructure.Querys
                  .Include(p => p.Interaction)
                      .ThenInclude(i => i.Interactionstype)
                  .Include(p => p.TaskStatus)
-                     .ThenInclude(t => t.Status)
+                     .ThenInclude(t => t.TaskStatus)
                  .Include(p => p.TaskStatus)
                      .ThenInclude(t => t.AssignedUser)
                  .FirstOrDefaultAsync(p => p.ProjectID == projectId);
@@ -52,7 +52,7 @@ namespace Infraestructure.Querys
                 .Include(p => p.Interaction)
                     .ThenInclude(i => i.Interactionstype)
                 .Include(p => p.TaskStatus)
-                    .ThenInclude(t => t.Status)
+                    .ThenInclude(t => t.TaskStatus)
                 .Include(p => p.TaskStatus)
                 .AsQueryable();
 
@@ -69,7 +69,7 @@ namespace Infraestructure.Querys
             {
                 query = query.Where(p => p.ClientID == clientId.Value);
             }
-            // Aplicar paginación
+            
             if (offset.HasValue)
             {
                 query = query.Skip(offset.Value);
@@ -81,16 +81,6 @@ namespace Infraestructure.Querys
             }
 
             return await query.ToListAsync();
-        }
-
-        public async Task<Projects> GetProjectByIdAsync(Guid projectId)
-        {
-            return await _context.Projects
-                                 .Include(p => p.CampaignTypes)
-                                 .Include(p => p.Clients)
-                                 .Include(p => p.TaskStatus)
-                                 .Include(p => p.Interaction)
-                                 .FirstOrDefaultAsync(p => p.ProjectID == projectId);
         }
 
     }

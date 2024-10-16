@@ -14,5 +14,6 @@ namespace Aplication.Interfaces
         Task AddTaskToProject(Tasks task);
         Task UpdateTaskToProject(Tasks updatedTask);
         Task InsertInteraction(Interactions interaction);
+        Task UpdateProject(Projects project);
     }
 }

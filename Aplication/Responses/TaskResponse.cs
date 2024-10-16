@@ -8,23 +8,26 @@ namespace Aplication.Responses
 {
     public class TaskResponse
     {
-        public Guid TaskId { get; set; }
-        public string TaskName { get; set; }
-        public CreateUsersResponse Users { get; set; }
-        public CreateTaskStatusResponse TaskStatus { get; set; }
+        public Guid id { get; set; }
+        public string name { get; set; }
+        public DateTime dueDate { get; set; }
+        public Guid projectId { get; set; }
+        public CreateTaskStatusResponse status { get; set; }
+        public CreateUsersResponse userAssigned { get; set; }
+        
 
     }
 
     public class CreateUsersResponse
     {
-        public int UserID { get; set; }
-        public string Name { get; set; }
-        public string Email { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+        public string email { get; set; }
     }
 
     public class CreateTaskStatusResponse
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
     }
 }

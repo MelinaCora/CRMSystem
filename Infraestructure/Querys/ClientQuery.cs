@@ -27,7 +27,6 @@ namespace Infraestructure.Querys
 
         public async Task<Clients> GetClientByIdAsync(int clientId)
         {
-            // Buscar el cliente por ID en la base de datos
             var client = await _context.Clients
                                        .FirstOrDefaultAsync(c => c.ClientID == clientId);
 

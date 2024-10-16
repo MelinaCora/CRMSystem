@@ -21,25 +21,39 @@ namespace CRMSystem.Controllers
         public ProjectController(IProjectService service)
         {
             _service = service;
-        }
-          
+        }          
         
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetProjects(
             string? Name,
             int? campaign,
             int? client,
             int? offset,
             int? limit)
-        {
-            var result = await _service.GetProjectsAsync(Name, campaign, client, offset, limit);
-
-            if (result.Count == 0)
+        {            
+            try
             {
-                return NotFound("No projects found.");
+                var result = await _service.GetProjectsAsync(Name, campaign, client, offset, limit);
+
+                if (result.Count == 0)
+                {
+                    return NotFound("No projects found.");
+                }
+
+                return Ok(result);
+            }
+            catch (ObjectNotFoundException ex)
+            {                
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
 
-            return Ok(result);
+
         }
 
         [HttpPost]
@@ -72,6 +86,8 @@ namespace CRMSystem.Controllers
 
         
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetProjectById(Guid id)
         {
             try
@@ -81,33 +97,28 @@ namespace CRMSystem.Controllers
             }
             catch (ObjectNotFoundException ex)            {
                 
-                return BadRequest(new { message = ex.Message });
+                return NotFound(new { message = ex.Message });
             }
         }
-        
+
         [HttpPatch("{id}/interactions")]
         public async Task<IActionResult> AddInteraction(Guid id, [FromBody] CreateInteractionRequest request)
         {
-            
             try
-            {
-                var result = await _service.AddInteractionAsync(id,request);
-
-                if (result)
-                {
-                    return Ok("Interaction added successfully.");
-                }
-                else
-                {
-                    return StatusCode(500, "An error occurred while adding the interaction.");
-                }
+            {                
+                var interactionResponse = await _service.AddInteractionAsync(id, request);               
+                return Ok(interactionResponse);
             }
             catch (ObjectNotFoundException ex)
-            {
+            {                
                 return BadRequest(new { message = ex.Message });
             }
+            catch (Exception ex)
+            {               
+                return StatusCode(500, new { message = "An error occurred while adding the interaction.", details = ex.Message });
+            }
         }
-       
+
         [HttpPatch("{id}/tasks")]
         public async Task<IActionResult> AddTaskToProject(Guid id, [FromBody] TaskRequest request)
         {
@@ -118,16 +129,9 @@ namespace CRMSystem.Controllers
 
             try
             {
-                var result = await _service.AddTaskToProject(id, request);
-
-                if (result)
-                {
-                    return Ok("Task added successfully.");
-                }
-                else
-                {
-                    return StatusCode(500, "An error occurred while adding the task.");
-                }
+                var taskResponse = await _service.AddTaskToProject(id, request);
+                return Ok(taskResponse);
+                
             }
             catch (ObjectNotFoundException ex)
             {
@@ -135,8 +139,8 @@ namespace CRMSystem.Controllers
             }
         }
 
-        [HttpPut("Tasks/{taskId}")]
-        public async Task<IActionResult> UpdateTask(Guid taskId, [FromBody] TaskRequest request)
+        [HttpPut("/api/v1/Tasks/{id}")]
+        public async Task<IActionResult> UpdateTask(Guid id, [FromBody] TaskRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -145,7 +149,7 @@ namespace CRMSystem.Controllers
 
             try
             {
-                var updatedTask = await _service.UpdateTaskAsync(taskId, request);
+                var updatedTask = await _service.UpdateTaskAsync(id, request);
                 return Ok(updatedTask);
 
             }

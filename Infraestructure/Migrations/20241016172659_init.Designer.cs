@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestructure.Migrations
 {
     [DbContext(typeof(CrmContext))]
-    [Migration("20240829012536_SeedInitialData")]
-    partial class SeedInitialData
+    [Migration("20241016172659_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,7 +40,7 @@ namespace Infraestructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CampaignTypes");
+                    b.ToTable("CampaignTypes", (string)null);
 
                     b.HasData(
                         new
@@ -83,6 +83,9 @@ namespace Infraestructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
+                    b.Property<DateTime?>("CreateDate")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -100,7 +103,59 @@ namespace Infraestructure.Migrations
 
                     b.HasKey("ClientID");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Clients", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            ClientID = 1,
+                            Address = "calle 54 4713, Buenos Aires, Argentina",
+                            Company = "Tech Solutions",
+                            CreateDate = new DateTime(2024, 1, 15, 10, 30, 0, 0, DateTimeKind.Unspecified),
+                            Email = "melinaccora97@gmail.com",
+                            Name = "Melina Cora",
+                            Phone = "1153311347"
+                        },
+                        new
+                        {
+                            ClientID = 2,
+                            Address = "Av. Corrientes 1234, Buenos Aires, Argentina",
+                            Company = "Empresa Global S.A.",
+                            CreateDate = new DateTime(2024, 2, 20, 11, 45, 0, 0, DateTimeKind.Unspecified),
+                            Email = "martin.cora.72@gmail.com",
+                            Name = "Martin Cora",
+                            Phone = "1123545655"
+                        },
+                        new
+                        {
+                            ClientID = 3,
+                            Address = "Bv. Mitre 150, Rosario, Argentina",
+                            Company = "Ingeniería y Construcciones",
+                            CreateDate = new DateTime(2024, 3, 10, 9, 20, 0, 0, DateTimeKind.Unspecified),
+                            Email = "cvalenzuela@gmail.com",
+                            Name = "Cristian Valenzuela",
+                            Phone = "1167812345"
+                        },
+                        new
+                        {
+                            ClientID = 4,
+                            Address = "San Martín 987, Mendoza, Argentina",
+                            Company = "Consultoría Integral",
+                            CreateDate = new DateTime(2024, 4, 5, 14, 50, 0, 0, DateTimeKind.Unspecified),
+                            Email = "tahielbenjaminvalenzuela@gmail.com",
+                            Name = "Tahiel Valenzuela",
+                            Phone = "1123235454"
+                        },
+                        new
+                        {
+                            ClientID = 5,
+                            Address = "Calle Independencia 345, La Plata, Argentina",
+                            Company = "Sofland Argentina",
+                            CreateDate = new DateTime(2024, 5, 25, 16, 10, 0, 0, DateTimeKind.Unspecified),
+                            Email = "lofranco73@gmail.com",
+                            Name = "Lorena Franco",
+                            Phone = "1154843550"
+                        });
                 });
 
             modelBuilder.Entity("CRMSystem.Models.InteractionTypes", b =>
@@ -118,7 +173,7 @@ namespace Infraestructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InteractionTypes");
+                    b.ToTable("InteractionTypes", (string)null);
 
                     b.HasData(
                         new
@@ -169,7 +224,7 @@ namespace Infraestructure.Migrations
 
                     b.HasIndex("ProjectID");
 
-                    b.ToTable("Interactions");
+                    b.ToTable("Interactions", (string)null);
                 });
 
             modelBuilder.Entity("CRMSystem.Models.Projects", b =>
@@ -184,6 +239,9 @@ namespace Infraestructure.Migrations
                     b.Property<int>("ClientID")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime(6)");
 
@@ -195,13 +253,19 @@ namespace Infraestructure.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime(6)");
+
                     b.HasKey("ProjectID");
 
                     b.HasIndex("CampaignType");
 
                     b.HasIndex("ClientID");
 
-                    b.ToTable("Projects");
+                    b.HasIndex("ProjectName")
+                        .IsUnique();
+
+                    b.ToTable("Projects", (string)null);
                 });
 
             modelBuilder.Entity("CRMSystem.Models.TaskStatus", b =>
@@ -212,40 +276,40 @@ namespace Infraestructure.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("name")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("varchar(25)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TaskStatus");
+                    b.ToTable("TaskStatus", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            name = "Pending"
+                            Name = "Pending"
                         },
                         new
                         {
                             Id = 2,
-                            name = "In Progress"
+                            Name = "In Progress"
                         },
                         new
                         {
                             Id = 3,
-                            name = "Blocked"
+                            Name = "Blocked"
                         },
                         new
                         {
                             Id = 4,
-                            name = "Done"
+                            Name = "Done"
                         },
                         new
                         {
                             Id = 5,
-                            name = "Cancel"
+                            Name = "Cancel"
                         });
                 });
 
@@ -258,6 +322,9 @@ namespace Infraestructure.Migrations
                     b.Property<int>("AssignedTo")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime(6)");
 
@@ -269,8 +336,12 @@ namespace Infraestructure.Migrations
                     b.Property<Guid>("ProjectID")
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("StatusId")
-                        .HasColumnType("int");
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
+                        .HasColumnName("Status");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("TaskID");
 
@@ -278,9 +349,9 @@ namespace Infraestructure.Migrations
 
                     b.HasIndex("ProjectID");
 
-                    b.HasIndex("StatusId");
+                    b.HasIndex("Status");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("Tasks", (string)null);
                 });
 
             modelBuilder.Entity("CRMSystem.Models.Users", b =>
@@ -303,7 +374,7 @@ namespace Infraestructure.Migrations
 
                     b.HasKey("UserID");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new
@@ -340,19 +411,19 @@ namespace Infraestructure.Migrations
 
             modelBuilder.Entity("CRMSystem.Models.Interactions", b =>
                 {
-                    b.HasOne("CRMSystem.Models.InteractionTypes", "Interactiontype")
+                    b.HasOne("CRMSystem.Models.InteractionTypes", "Interactionstype")
                         .WithMany()
                         .HasForeignKey("InteractionType")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("CRMSystem.Models.Projects", "Project")
-                        .WithMany("Interactions")
+                        .WithMany("Interaction")
                         .HasForeignKey("ProjectID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Interactiontype");
+                    b.Navigation("Interactionstype");
 
                     b.Navigation("Project");
                 });
@@ -390,9 +461,9 @@ namespace Infraestructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CRMSystem.Models.TaskStatus", "Status")
+                    b.HasOne("CRMSystem.Models.TaskStatus", "TaskStatus")
                         .WithMany()
-                        .HasForeignKey("StatusId")
+                        .HasForeignKey("Status")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -400,12 +471,12 @@ namespace Infraestructure.Migrations
 
                     b.Navigation("Project");
 
-                    b.Navigation("Status");
+                    b.Navigation("TaskStatus");
                 });
 
             modelBuilder.Entity("CRMSystem.Models.Projects", b =>
                 {
-                    b.Navigation("Interactions");
+                    b.Navigation("Interaction");
 
                     b.Navigation("TaskStatus");
                 });

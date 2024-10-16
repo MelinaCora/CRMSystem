@@ -6,10 +6,10 @@
         public DateTime Date { get; set; }
         public string Notes { get; set; }
 
-        public Guid ProjectID { get; set; }        // Foreign Key
+        public Guid ProjectID { get; set; } 
         public Projects Project { get; set; }
 
-        public int InteractionType { get; set; } // Foreign Key
+        public int InteractionType { get; set; }
         public InteractionTypes Interactionstype { get; set; }
     }
 }

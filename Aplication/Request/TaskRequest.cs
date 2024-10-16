@@ -8,9 +8,9 @@ namespace Aplication.Request
 {
     public class TaskRequest
     {
-        public string TaskName { get; set; }
-        public DateTime DueDate { get; set; }
-        public int AssignedTo { get; set; } // User ID
-        public int StatusId { get; set; } // Task status
+        public string name { get; set; }
+        public DateTime dueDate { get; set; }
+        public int user { get; set; }
+        public int status { get; set; }
     }
 }
