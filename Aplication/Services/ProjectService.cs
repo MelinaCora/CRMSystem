@@ -309,13 +309,12 @@ namespace Aplication.Services
                 notes = newInteraction.Notes,
                 date = newInteraction.Date,
                 projectId = newInteraction.ProjectID,
-                interactionType = newInteraction.Interactionstype != null
+                interactionType = newInteraction.InteractionType != null
                 ? new CreateInteractionTypeResponse
                 {
-                    id = newInteraction.InteractionType,
+                    id = newInteraction.Interactionstype.Id,
                     name = newInteraction.Interactionstype.Name
-                }
-                : null
+                } : null               
             };
             return interactionResponse;
         }
