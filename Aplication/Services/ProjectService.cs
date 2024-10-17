@@ -309,7 +309,7 @@ namespace Aplication.Services
                 notes = newInteraction.Notes,
                 date = newInteraction.Date,
                 projectId = newInteraction.ProjectID,
-                interactionType = newInteraction.InteractionType != null
+                interactionType = newInteraction.Interactionstype != null
                 ? new CreateInteractionTypeResponse
                 {
                     id = newInteraction.Interactionstype.Id,
