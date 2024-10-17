@@ -27,7 +27,7 @@ namespace CRMSystem.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetProjects(
-            string? Name,
+            string? name,
             int? campaign,
             int? client,
             int? offset,
@@ -35,7 +35,7 @@ namespace CRMSystem.Controllers
         {            
             try
             {
-                var result = await _service.GetProjectsAsync(Name, campaign, client, offset, limit);
+                var result = await _service.GetProjectsAsync(name, campaign, client, offset, limit);
 
                 if (result.Count == 0)
                 {
