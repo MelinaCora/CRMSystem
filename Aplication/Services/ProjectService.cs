@@ -312,7 +312,7 @@ namespace Aplication.Services
                 interactionType = newInteraction.InteractionType != null
                 ? new CreateInteractionTypeResponse
                 {
-                    id = newInteraction.InteractionType,
+                    id = newInteraction.Interactionstype.Id,
                     name = newInteraction.Interactionstype.Name
                 } : null               
             };
