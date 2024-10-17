@@ -223,7 +223,7 @@ namespace Aplication.Services
             };
         }
 
-        public async Task<List<CreateProjectResponse>> GetProjectsAsync(string? Name, 
+        public async Task<List<CreateProjectResponse>> GetProjectsAsync(string? name, 
             int? campaign, 
             int? client, 
             int? offset, 
@@ -249,7 +249,7 @@ namespace Aplication.Services
             }
          
 
-            var projects = await _query.GetProjectsAsync(Name, campaign, client, offset, limit);
+            var projects = await _query.GetProjectsAsync(name, campaign, client, offset, limit);
             var responseProjects = new List<CreateProjectResponse>();
 
             foreach (var project in projects)
