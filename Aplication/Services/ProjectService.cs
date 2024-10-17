@@ -376,34 +376,33 @@ namespace Aplication.Services
             {
                 throw new ObjectNotFoundException("Task not found.");
             }
-
             
             task.Name = request.name;
             task.DueDate = request.dueDate;
             task.AssignedTo = request.user;
             task.Status = request.status;
-
+            task.UpdateDate = DateTime.Now;
             
             await _taskCommand.UpdateTaskAsync(task); 
-
             
             var taskResponse = new TaskResponse
             {
                 id = task.TaskID,
                 name = task.Name,
+                dueDate=task.DueDate,
+                projectId=task.ProjectID,
                 userAssigned = task.AssignedUser != null ? new CreateUsersResponse
                 {
                     id= task.AssignedTo,
                     name= task.AssignedUser.Name,
                     email=task.AssignedUser.Email
                 } : null,
-                status = task.Status != null ? new CreateTaskStatusResponse
+                status = task.TaskStatus != null ? new CreateTaskStatusResponse
                 {
-                    id = task.Status,
+                    id = task.TaskStatus.Id,
                     name = task.TaskStatus.Name,
                 } : null,
             };
-
             return taskResponse;
         }
     }
