@@ -393,7 +393,7 @@ namespace Aplication.Services
                 projectId=task.ProjectID,
                 userAssigned = task.AssignedUser != null ? new CreateUsersResponse
                 {
-                    id= task.AssignedTo,
+                    id= task.AssignedUser.UserID,
                     name= task.AssignedUser.Name,
                     email=task.AssignedUser.Email
                 } : null,
