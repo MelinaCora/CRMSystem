@@ -289,6 +289,16 @@ namespace Aplication.Services
                 throw new ObjectNotFoundException($"No se encontró un proyecto con el ID ");
             }
 
+            if (string.IsNullOrEmpty(request.notes))
+            {
+                throw new RequiredParameterException("Error. Notes is required");
+            }
+
+            if (request.InteractionType == null)
+            {
+                throw new RequiredParameterException("Error. Interaction Type is Required");
+            }
+
             var newInteraction = new Interactions
             {
                 ProjectID = projectId,
@@ -326,6 +336,21 @@ namespace Aplication.Services
             if (project == null)
             {
                 throw new ObjectNotFoundException($"No se encontró un proyecto con el ID {projectId}");
+            }
+
+            if(string.IsNullOrEmpty(request.name))
+            {
+                throw new RequiredParameterException("Error. The task's Name is required");
+            }
+
+            if (request.user == null)
+            {
+                throw new RequiredParameterException("Error. The User is required");
+            }
+
+            if (request.status == null)
+            {
+                throw new RequiredParameterException("Error. The Status is required");
             }
 
             var task = new Tasks

@@ -103,6 +103,8 @@ namespace CRMSystem.Controllers
         }
                         
         [HttpPatch("{id}/interactions")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddInteraction(Guid id, [FromBody] CreateInteractionRequest request)
         {
             try
@@ -114,13 +116,15 @@ namespace CRMSystem.Controllers
             {                
                 return BadRequest(new { message = ex.Message });
             }
-            catch (Exception ex)
+            catch (RequiredParameterException ex)
             {               
-                return StatusCode(500, new { message = "An error occurred while adding the interaction.", details = ex.Message });
+                return BadRequest(new { message = ex.Message });
             }
         }
                
         [HttpPatch("{id}/tasks")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> AddTaskToProject(Guid id, [FromBody] TaskRequest request)
         {
             if (!ModelState.IsValid)
@@ -137,6 +141,10 @@ namespace CRMSystem.Controllers
             catch (ObjectNotFoundException ex)
             {
                return BadRequest(new { message = ex.Message });
+            }
+            catch (RequiredParameterException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
         }
                
