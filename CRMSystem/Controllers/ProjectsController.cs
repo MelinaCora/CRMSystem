@@ -27,13 +27,14 @@ namespace CRMSystem.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetProjects(
             string? name,
             int? campaign,
             int? client,
             int? offset,
             int? size)
-        {            
+        {
             try
             {
                 var result = await _service.GetProjectsAsync(name, campaign, client, offset, size);
@@ -46,8 +47,12 @@ namespace CRMSystem.Controllers
                 return Ok(result);
             }
             catch (ObjectNotFoundException ex)
-            {                
+            {
                 return NotFound(new { message = ex.Message });
+            }
+            catch (StaticParameterException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
             catch (Exception ex)
             {
@@ -57,7 +62,8 @@ namespace CRMSystem.Controllers
 
         }
               
-        [HttpPost]          
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateProject(ProjectRequest request)
         {
             try
@@ -76,6 +82,10 @@ namespace CRMSystem.Controllers
                 return BadRequest(new { message = ex.Message });
             }
             catch (RequiredParameterException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (StaticParameterException ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
@@ -120,6 +130,11 @@ namespace CRMSystem.Controllers
             {               
                 return BadRequest(new { message = ex.Message });
             }
+            catch (StaticParameterException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+
         }
                
         [HttpPatch("{id}/tasks")]
@@ -146,6 +161,10 @@ namespace CRMSystem.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+            catch (StaticParameterException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
                
         [HttpPut("/api/v1/Tasks/{id}")]
@@ -163,6 +182,14 @@ namespace CRMSystem.Controllers
 
             }
             catch (ObjectNotFoundException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (StaticParameterException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (RequiredParameterException ex)
             {
                 return BadRequest(new { message = ex.Message });
             }

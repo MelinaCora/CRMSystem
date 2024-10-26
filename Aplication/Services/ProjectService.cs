@@ -61,6 +61,11 @@ namespace Aplication.Services
                 throw new RequiredParameterException("Error. Start date cannot be in the past");
             }
 
+            if (request.campaignType < 1 || request.campaignType > 4)
+            {
+                throw new StaticParameterException("Error. CampaignType must be between 1 and 4.");
+            }
+
             var existingProject = await _query.GetProjectByNameAsync(request.name);
             
             if (existingProject != null)
@@ -247,7 +252,11 @@ namespace Aplication.Services
             {
                 limit = 10; 
             }
-         
+
+            if (campaign < 1 || campaign > 4)
+            {
+                throw new StaticParameterException("Error. CampaignType must be between 1 and 4.");
+            }
 
             var projects = await _query.GetProjectsAsync(name, campaign, client, offset, limit);
             var responseProjects = new List<CreateProjectResponse>();
@@ -299,6 +308,11 @@ namespace Aplication.Services
                 throw new RequiredParameterException("Error. Interaction Type is Required");
             }
 
+            if (request.InteractionType < 1 || request.InteractionType > 4)
+            {
+                throw new StaticParameterException("Error. Interaction Type must be between 1 and 4");
+            }
+
             var newInteraction = new Interactions
             {
                 ProjectID = projectId,
@@ -348,9 +362,19 @@ namespace Aplication.Services
                 throw new RequiredParameterException("Error. The User is required");
             }
 
+            if (request.user < 1 || request.user > 5)
+            {
+                throw new StaticParameterException("Error. The User id must be between 1 and 5");
+            }
+
             if (request.status == null)
             {
                 throw new RequiredParameterException("Error. The Status is required");
+            }
+
+            if (request.status < 1 || request.status > 5)
+            {
+                throw new StaticParameterException("Error. The status id must be between 1 and 5");
             }
 
             var task = new Tasks
@@ -401,7 +425,33 @@ namespace Aplication.Services
             {
                 throw new ObjectNotFoundException("Task not found.");
             }
-            
+
+            if (string.IsNullOrEmpty(request.name))
+            {
+                throw new RequiredParameterException("Error. The task's name is required");
+            }
+
+            if (request.user == null)
+            {
+                throw new RequiredParameterException("Error. The user id is required");
+            }
+
+            if (request.user < 1 || request.user > 5)
+            {
+                throw new StaticParameterException("Error. the user id must be between 1 and 5");
+            }
+
+            if (request.status == null)
+            {
+                throw new RequiredParameterException("Error. The status id is required");
+            }
+
+            if (request.status < 1 || request.status > 5)
+            {
+                throw new StaticParameterException("Error. the status id must be between 1 and 5");
+            }
+
+
             task.Name = request.name;
             task.DueDate = request.dueDate;
             task.AssignedTo = request.user;
