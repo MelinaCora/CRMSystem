@@ -313,6 +313,16 @@ namespace Aplication.Services
                 throw new StaticParameterException("Error. Interaction Type must be between 1 and 4");
             }
 
+            if (request.date == default(DateTime))
+            {
+                throw new RequiredParameterException("Error.The date is required");
+            }
+
+            if (request.date < DateTime.Now)
+            {
+                throw new RequiredParameterException("Error. The date cannot be in the past");
+            }
+
             var newInteraction = new Interactions
             {
                 ProjectID = projectId,
@@ -375,6 +385,16 @@ namespace Aplication.Services
             if (request.status < 1 || request.status > 5)
             {
                 throw new StaticParameterException("Error. The status id must be between 1 and 5");
+            }
+
+            if (request.dueDate == default(DateTime))
+            {
+                throw new RequiredParameterException("Error.The date is required");
+            }
+
+            if (request.dueDate < DateTime.Now)
+            {
+                throw new RequiredParameterException("Error. The date cannot be in the past");
             }
 
             var task = new Tasks

@@ -64,6 +64,7 @@ namespace CRMSystem.Controllers
               
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> CreateProject(ProjectRequest request)
         {
             try
@@ -79,7 +80,7 @@ namespace CRMSystem.Controllers
             catch (ObjectNotFoundException ex)
             {
 
-                return BadRequest(new { message = ex.Message });
+                return NotFound(new { message = ex.Message });
             }
             catch (RequiredParameterException ex)
             {
@@ -115,6 +116,7 @@ namespace CRMSystem.Controllers
         [HttpPatch("{id}/interactions")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> AddInteraction(Guid id, [FromBody] CreateInteractionRequest request)
         {
             try
@@ -124,7 +126,7 @@ namespace CRMSystem.Controllers
             }
             catch (ObjectNotFoundException ex)
             {                
-                return BadRequest(new { message = ex.Message });
+                return NotFound(new { message = ex.Message });
             }
             catch (RequiredParameterException ex)
             {               
@@ -140,6 +142,7 @@ namespace CRMSystem.Controllers
         [HttpPatch("{id}/tasks")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> AddTaskToProject(Guid id, [FromBody] TaskRequest request)
         {
             if (!ModelState.IsValid)
@@ -168,6 +171,9 @@ namespace CRMSystem.Controllers
         }
                
         [HttpPut("/api/v1/Tasks/{id}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateTask(Guid id, [FromBody] TaskRequest request)
         {
             if (!ModelState.IsValid)
@@ -183,7 +189,7 @@ namespace CRMSystem.Controllers
             }
             catch (ObjectNotFoundException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return NotFound(new { message = ex.Message });
             }
             catch (StaticParameterException ex)
             {
