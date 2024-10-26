@@ -27,158 +27,143 @@ namespace CRMSystem.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CampaignTypes>()
-                .ToTable("CampaignTypes")
-                .HasKey(ct => ct.Id);
+            modelBuilder.Entity<CampaignTypes>(entity =>
+            {
+                entity.ToTable("CampaignTypes");
+                entity.HasKey(ct => ct.Id);
 
-            modelBuilder.Entity<CampaignTypes>()
-                .Property(ct => ct.Name)
-                .HasMaxLength(25);
+                entity.Property(ct => ct.Name)
+                    .HasMaxLength(25);
+            });
+                       
+            modelBuilder.Entity<Clients>(entity =>
+            {
+                entity.ToTable("Clients");
+                entity.HasKey(cl => cl.ClientID);
 
-            modelBuilder.Entity<Clients>()
-                .ToTable("Clients")
-                .HasKey(cl => cl.ClientID);
+                entity.Property(cl => cl.ClientID)
+                    .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<Clients>()
-                .Property(cl => cl.ClientID)
-                .ValueGeneratedOnAdd();
+                entity.Property(cl => cl.Name)
+                    .HasMaxLength(255);
 
-            modelBuilder.Entity<Clients>()
-                .Property(cl => cl.Name)
-                .HasMaxLength(255);
+                entity.Property(cl => cl.Email)
+                    .HasMaxLength(255);
 
-            modelBuilder.Entity<Clients>()
-               .Property(cl => cl.Email)
-               .HasMaxLength(255);
+                entity.Property(cl => cl.Phone)
+                    .HasMaxLength(255);
 
-            modelBuilder.Entity<Clients>()
-               .Property(cl => cl.Phone)
-               .HasMaxLength(255);
+                entity.Property(cl => cl.Company)
+                    .HasMaxLength(100);
 
-            modelBuilder.Entity<Clients>()
-               .Property(cl => cl.Company)
-               .HasMaxLength(100);
+                entity.Property(cl => cl.Address)
+                    .HasMaxLength(int.MaxValue);
 
-            modelBuilder.Entity<Clients>()
-               .Property(cl => cl.Address)
-               .HasMaxLength(int.MaxValue);
+                entity.Property(cl => cl.CreateDate);
+            });
 
-            modelBuilder.Entity<Clients>()
-                .Property(cl => cl.CreateDate);
-                
+            modelBuilder.Entity<InteractionTypes>(entity =>
+            {
+                entity.ToTable("InteractionTypes");
+                entity.HasKey(it => it.Id);
 
-            modelBuilder.Entity<InteractionTypes>()
-                .ToTable("InteractionTypes")
-                .HasKey(it => it.Id);
+                entity.Property(it => it.Name)
+                    .HasMaxLength(25);
+            });            
 
-            modelBuilder.Entity<InteractionTypes>()
-                .Property(it => it.Name)
-                .HasMaxLength(25);
+            modelBuilder.Entity<Users>(entity =>
+            {
+                entity.ToTable("Users");
+                entity.HasKey(u => u.UserID);
 
-            modelBuilder.Entity<Users>()
-                .ToTable("Users")
-                .HasKey(u => u.UserID);
+                entity.Property(u => u.Name)
+                    .HasMaxLength(255);
 
-            modelBuilder.Entity<Users>()
-                .Property(u => u.Name)
-                .HasMaxLength(255);
+                entity.Property(u => u.Email)
+                    .HasMaxLength(255);
+            });
 
-            modelBuilder.Entity<Users>()
-               .Property(u => u.Email)
-               .HasMaxLength(255);
+            modelBuilder.Entity<TaskStatus>(entity =>
+            {
+                entity.ToTable("TaskStatus");
+                entity.HasKey(ts => ts.Id);
 
-            modelBuilder.Entity<TaskStatus>()
-                .ToTable("TaskStatus")
-                .HasKey(ts => ts.Id);
+                entity.Property(ts => ts.Name)
+                    .HasMaxLength(25);
+            });           
 
-            modelBuilder.Entity<TaskStatus>()
-                .Property(ts => ts.Name)
-                .HasMaxLength(25);
+            modelBuilder.Entity<Projects>(entity =>
+            {
+                entity.ToTable("Projects");
+                entity.HasKey(p => p.ProjectID);
 
-            modelBuilder.Entity<Projects>()
-                .ToTable("Projects")
-                .HasKey(p => p.ProjectID);
+                entity.Property(p => p.ProjectID)
+                    .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<Projects>()
-                .Property(p => p.ProjectID)
-                .ValueGeneratedOnAdd();
+                entity.Property(p => p.ProjectName)
+                    .HasMaxLength(255);
 
-            modelBuilder.Entity<Projects>()
-                .Property(p => p.ProjectName)
-                .HasMaxLength(255);
+                entity.HasOne(p => p.CampaignTypes)
+                    .WithMany()
+                    .HasForeignKey(p => p.CampaignType);
 
-            modelBuilder.Entity<Projects>()
-                .HasOne<CampaignTypes>(p => p.CampaignTypes)
-                .WithMany()
-                .HasForeignKey(p => p.CampaignType);
+                entity.HasOne(p => p.Clients)
+                    .WithMany()
+                    .HasForeignKey(p => p.ClientID);
 
-            modelBuilder.Entity<Projects>()
-                .HasOne<Clients>(p => p.Clients)
-                .WithMany()
-                .HasForeignKey(p => p.ClientID);
+                entity.HasIndex(p => p.ProjectName)
+                    .IsUnique();
+            });
 
-            modelBuilder.Entity<Projects>()
-                .HasIndex(p => p.ProjectName)
-                .IsUnique();
+            modelBuilder.Entity<Tasks>(entity =>
+            {
+                entity.ToTable("Tasks");
+                entity.HasKey(t => t.TaskID);
 
-            modelBuilder.Entity<Tasks>()
-                .ToTable("Tasks")
-                .HasKey(t => t.TaskID);
+                entity.Property(t => t.TaskID)
+                    .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<Tasks>()
-                .Property(t => t.TaskID)
-                .ValueGeneratedOnAdd();
+                entity.Property(t => t.Name)
+                    .HasMaxLength(int.MaxValue);
 
-            modelBuilder.Entity<Tasks>()
-                .Property(t => t.Name)
-                .HasMaxLength(int.MaxValue);
+                entity.HasOne(t => t.AssignedUser)
+                    .WithMany()
+                    .HasForeignKey(t => t.AssignedTo);
 
-            modelBuilder.Entity<Tasks>()
-                .HasOne(t => t.AssignedUser)
-                .WithMany()
-                .HasForeignKey(t => t.AssignedTo);
+                entity.Property(t => t.Status)
+                    .HasColumnName("Status");
 
-            modelBuilder.Entity<Tasks>()
-                .Property(t => t.Status)
-                .HasColumnName("Status");
+                entity.HasOne(t => t.TaskStatus)
+                    .WithMany()
+                    .HasForeignKey(t => t.Status);
 
-            modelBuilder.Entity<Tasks>()
-                .HasOne(t => t.TaskStatus)
-                .WithMany()
-                .HasForeignKey(t => t.Status);
+                entity.HasOne(t => t.Project)
+                    .WithMany(p => p.TaskStatus)
+                    .HasForeignKey(t => t.ProjectID);
 
-            modelBuilder.Entity<Tasks>()
-                .HasOne(t => t.Project)
-                .WithMany(p => p.TaskStatus)
-                .HasForeignKey(t => t.ProjectID);
+                entity.Property(t => t.CreateDate);
+                entity.Property(t => t.UpdateDate);
+            });
 
-            modelBuilder.Entity<Tasks>()
-              .Property(t => t.CreateDate);
+            modelBuilder.Entity<Interactions>(entity =>
+            {
+                entity.ToTable("Interactions");
+                entity.HasKey(i => i.InteractionID);
 
-            modelBuilder.Entity<Tasks>()
-                .Property(t => t.UpdateDate);
+                entity.Property(i => i.InteractionID)
+                    .ValueGeneratedOnAdd();
 
-            modelBuilder.Entity<Interactions>()
-                .ToTable("Interactions")
-                .HasKey(i => i.InteractionID);
+                entity.Property(i => i.Notes)
+                    .HasMaxLength(int.MaxValue);
 
-            modelBuilder.Entity<Interactions>()
-                .Property(i => i.InteractionID)
-                .ValueGeneratedOnAdd();
+                entity.HasOne(i => i.Project)
+                    .WithMany(p => p.Interaction)
+                    .HasForeignKey(i => i.ProjectID);
 
-            modelBuilder.Entity<Interactions>()
-                .Property(i => i.Notes)
-                .HasMaxLength(int.MaxValue);
-
-            modelBuilder.Entity<Interactions>()
-                .HasOne(i => i.Project)
-                .WithMany(p => p.Interaction)
-                .HasForeignKey(i => i.ProjectID);
-
-            modelBuilder.Entity<Interactions>()
-                .HasOne(i => i.Interactionstype)
-                .WithMany()
-                .HasForeignKey(i => i.InteractionType);
+                entity.HasOne(i => i.Interactionstype)
+                    .WithMany()
+                    .HasForeignKey(i => i.InteractionType);
+            });
 
             modelBuilder.Entity<Users>().HasData(
                 new Users { UserID = 1, Name = "Joe Done", Email = "jdone@marketing.com" },

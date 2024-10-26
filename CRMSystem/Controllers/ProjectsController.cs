@@ -21,8 +21,9 @@ namespace CRMSystem.Controllers
         public ProjectController(IProjectService service)
         {
             _service = service;
-        }          
-        
+        }
+
+       
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -55,8 +56,8 @@ namespace CRMSystem.Controllers
 
 
         }
-
-        [HttpPost]
+              
+        [HttpPost]          
         public async Task<IActionResult> CreateProject(ProjectRequest request)
         {
             try
@@ -84,7 +85,7 @@ namespace CRMSystem.Controllers
             }
         }
 
-        
+              
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -100,14 +101,14 @@ namespace CRMSystem.Controllers
                 return NotFound(new { message = ex.Message });
             }
         }
-
+                        
         [HttpPatch("{id}/interactions")]
         public async Task<IActionResult> AddInteraction(Guid id, [FromBody] CreateInteractionRequest request)
         {
             try
             {                
                 var interactionResponse = await _service.AddInteractionAsync(id, request);               
-                return Ok(interactionResponse);
+                return Ok(interactionResponse);               
             }
             catch (ObjectNotFoundException ex)
             {                
@@ -118,7 +119,7 @@ namespace CRMSystem.Controllers
                 return StatusCode(500, new { message = "An error occurred while adding the interaction.", details = ex.Message });
             }
         }
-
+               
         [HttpPatch("{id}/tasks")]
         public async Task<IActionResult> AddTaskToProject(Guid id, [FromBody] TaskRequest request)
         {
@@ -138,7 +139,7 @@ namespace CRMSystem.Controllers
                return BadRequest(new { message = ex.Message });
             }
         }
-
+               
         [HttpPut("/api/v1/Tasks/{id}")]
         public async Task<IActionResult> UpdateTask(Guid id, [FromBody] TaskRequest request)
         {
