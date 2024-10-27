@@ -322,9 +322,9 @@ namespace Aplication.Services
             {
                 throw new RequiredParameterException("Error. The date cannot be in the past");
             }
-            if (request.date < project.StartDate)
+            if (request.date < project.StartDate || request.date > project.EndDate)
             {
-                throw new RequiredParameterException("Error. The date cannot be earlier than the project's start date.");
+                throw new RequiredParameterException("Error. The date must be between project's start and end.");
             }
             var newInteraction = new Interactions
             {
@@ -400,9 +400,9 @@ namespace Aplication.Services
                 throw new RequiredParameterException("Error. The date cannot be in the past");
             }
 
-            if (request.dueDate < project.StartDate)
+            if (request.dueDate < project.StartDate || request.dueDate > project.EndDate)
             {
-                throw new RequiredParameterException("Error. The date cannot be earlier than the project's start date.");
+                throw new RequiredParameterException("Error. The date must be between project's start and end.");
             }
 
             var task = new Tasks
