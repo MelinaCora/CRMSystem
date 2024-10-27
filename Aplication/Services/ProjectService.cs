@@ -322,7 +322,10 @@ namespace Aplication.Services
             {
                 throw new RequiredParameterException("Error. The date cannot be in the past");
             }
-
+            if (request.date < project.StartDate)
+            {
+                throw new RequiredParameterException("Error. The date cannot be earlier than the project's start date.");
+            }
             var newInteraction = new Interactions
             {
                 ProjectID = projectId,
@@ -395,6 +398,11 @@ namespace Aplication.Services
             if (request.dueDate < DateTime.Now)
             {
                 throw new RequiredParameterException("Error. The date cannot be in the past");
+            }
+
+            if (request.dueDate < project.StartDate)
+            {
+                throw new RequiredParameterException("Error. The date cannot be earlier than the project's start date.");
             }
 
             var task = new Tasks
@@ -470,8 +478,7 @@ namespace Aplication.Services
             {
                 throw new StaticParameterException("Error. the status id must be between 1 and 5");
             }
-
-
+          
             task.Name = request.name;
             task.DueDate = request.dueDate;
             task.AssignedTo = request.user;
