@@ -88,11 +88,11 @@ namespace Aplication.Services
             Projects project = new Projects
             {
                 ProjectName = request.name,
-                StartDate = request.start,
-                EndDate = request.end,
+                StartDate = request.start.ToLocalTime(),
+                EndDate = request.end.ToLocalTime(),
                 CampaignType = campaignType.Id,
                 Clients = client,
-                CreateDate=DateTime.Now,
+                CreateDate=DateTime.UtcNow,
             };
 
             await _command.InsertProject(project);
@@ -318,11 +318,11 @@ namespace Aplication.Services
                 throw new RequiredParameterException("Error.The date is required");
             }
 
-            if (request.date < DateTime.Now)
+            if (request.date.Date < DateTime.Now.Date)
             {
                 throw new RequiredParameterException("Error. The date cannot be in the past");
             }
-            if (request.date < project.StartDate || request.date > project.EndDate)
+            if (request.date.Date < project.StartDate.Date || request.date > project.EndDate)
             {
                 throw new RequiredParameterException("Error. The date must be between project's start and end.");
             }
