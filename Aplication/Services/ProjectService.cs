@@ -56,7 +56,7 @@ namespace Aplication.Services
                 throw new RequiredParameterException("Error. Start date is required");
             }
 
-            if (request.start < DateTime.Now)
+            if (request.start.Date < DateTime.Now.Date)
             {
                 throw new RequiredParameterException("Error. Start date cannot be in the past");
             }
